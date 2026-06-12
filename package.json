@@ -1,0 +1,15 @@
+{
+  "name": "blablalink-scraper",
+  "version": "5.0.0",
+  "description": "Scraper for NIKKE stats from blablalink.com — Pure DOM Mode",
+  "main": "scraper.js",
+  "scripts": {
+    "start": "node scraper.js",
+    "login": "node scraper.js --login"
+  },
+  "dependencies": {
+    "csv-parse": "^5.5.0",
+    "csv-stringify": "^6.4.0",
+    "puppeteer": "^25.1.0"
+  }
+}
