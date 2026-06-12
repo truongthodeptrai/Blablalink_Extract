@@ -129,3 +129,6 @@ Just edit `input.csv` — no code changes needed.
 | `input.csv` | Your roster (members + Nikke IDs) |
 | `output.csv` | Scraped results |
 | `cookies.json` | Your login session — **do not share this** |
+
+
+## WAWRNING: This project is mostly coded by AI so the result isn't 100% accurate. But from my tests, the accuracy is above 90%
