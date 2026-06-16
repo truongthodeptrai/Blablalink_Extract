@@ -13,7 +13,7 @@ const OUTPUT_FILE  = "output.csv";
 const COOKIES_FILE = "cookies.json";
 const BASE_URL     = "https://www.blablalink.com/shiftyspad/nikke";
 const LOGIN_URL    = "https://www.blablalink.com";
-const DELAY_MS     = 1500; // Giảm delay xuống vì quét DOM rất nhanh
+const DELAY_MS     = 1500;
 // ============================================================
 
 const isLoginMode = process.argv.includes("--login");
@@ -137,52 +137,53 @@ async function scrapeNikkePage(page, nikkeId, uid, nikkeNameFromCsv) {
   const url = buildUrl(nikkeId, uid);
   console.log(`   ${url}`);
 
-  await page.goto(url, { waitUntil: "networkidle2", timeout: 30000 });
-
-  // Đợi tiêu đề xuất hiện để chắc chắn trang đã load xong khung cơ bản
   try {
-    await page.waitForFunction(
-      () => document.body.innerText.includes("Equipment Effects"),
-      { timeout: 12000 }
-    );
-  } catch (e) {
-    console.log(`   ⚠ Timed out waiting for Equipment Effects container`);
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 45000 });
+  } catch (gotoError) {
+    console.log(`   ⚠ Navigation warning: ${gotoError.message}`);
   }
 
-  // Chờ thêm một chút ngắn để các con số render xong hoàn toàn vào DOM
-  await sleep(800);
+  try {
+    await page.waitForFunction(
+      () => {
+        // Tìm xem trên trang đã có chữ Equipment Effects chưa
+        const el = Array.from(document.querySelectorAll("div, span, p, h1, h2, h3, h4"))
+                        .find(x => x.innerText?.trim() === "Equipment Effects");
+        if (!el) return false;
+        
+        return el.parentElement?.innerText?.includes("%") || document.body.innerText.includes("No Effects");
+      },
+      { timeout: 5000 }
+    );
+  } catch (e) {
+    console.log(`   ⚠ Đang đợi render chỉ số lâu hơn bình thường...`);
+  }
 
-  // Kỹ thuật Hộp xám chuyên biệt: Chỉ tìm và quét trong "Khối tổng thể đầu tiên"
+  await sleep(500);
+
+  // Khối evaluate bóc tách DOM (Giữ nguyên logic ép tên CSV mà bạn đã sửa)
   const extractedData = await page.evaluate(() => {
     let increaseATK = "NOT FOUND";
     let increaseElementDamageDealt = "NOT FOUND";
 
-    // Tìm tất cả các khối bao quanh chữ "Equipment Effects" trên cùng
     const headings = Array.from(document.querySelectorAll("div, span, p, h1, h2, h3, h4"));
     let topContainer = null;
-
     for (const el of headings) {
       if (el.innerText?.trim() === "Equipment Effects") {
-        // Lấy thẻ cha lớn chứa toàn bộ cái bảng tổng hợp trên cùng này
         topContainer = el.parentElement;
         break;
       }
     }
 
-    // Nếu tìm thấy khối tổng thể, ta chỉ bóc tách các thẻ con bên trong khối này thôi
     if (topContainer) {
       const childElements = Array.from(topContainer.querySelectorAll("div, span, td, p"));
-      
       for (let i = 0; i < childElements.length; i++) {
         const text = childElements[i].innerText?.trim() || "";
-
         if (text.toLowerCase() === "increase atk") {
-          // Lấy text của thẻ cha hoặc thẻ bao quanh để tìm giá trị % đi kèm
           const contextText = childElements[i].parentElement?.innerText || "";
           const match = contextText.match(/(\d+\.\d+\%)/);
           if (match) increaseATK = match[1];
         }
-        
         if (text.toLowerCase() === "increase element damage dealt") {
           const contextText = childElements[i].parentElement?.innerText || "";
           const match = contextText.match(/(\d+\.\d+\%)/);
@@ -190,21 +191,9 @@ async function scrapeNikkePage(page, nikkeId, uid, nikkeNameFromCsv) {
         }
       }
     }
-
-    // Lấy tên nhân vật hiển thị trên cùng
-    let nikkeName = "";
-    for (const h of document.querySelectorAll("h1, h2, h3, [class*='title'], [class*='name']")) {
-      const t = h.innerText?.trim();
-      if (t && t.length > 1 && t.length < 40 && !t.startsWith("CV:")) {
-        nikkeName = t;
-        break;
-      }
-    }
-
-    return { nikkeName, increaseATK, increaseElementDamageDealt };
+    return { increaseATK, increaseElementDamageDealt };
   });
 
-  // Trả ra kết quả biên (Nếu không tìm thấy tức là bằng 0% hoặc chưa nâng cấp)
   return {
     nikkeName: nikkeNameFromCsv,
     increaseATK: extractedData.increaseATK === "NOT FOUND" ? "0%" : extractedData.increaseATK,
@@ -227,7 +216,6 @@ async function runScrapeMode() {
   });
 
   const page = await browser.newPage();
-  // Giữ kích thước màn hình chuẩn để bảng hiển thị trực quan
   await page.setViewport({ width: 1200, height: 900 });
   await page.setUserAgent(
     "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
@@ -244,8 +232,8 @@ async function runScrapeMode() {
     try {
       const stats = await scrapeNikkePage(page, chosenNikke.nikke_id, member.uid, chosenNikke.nikke_name);
 
-      console.log(`   ✅ Increase ATK                 : ${stats.increaseATK}`);
       console.log(`   ✅ Increase Element Damage Dealt: ${stats.increaseElementDamageDealt}`);
+      console.log(`   ✅ Increase ATK                 : ${stats.increaseATK}`);
 
       results.push({
         member_name:                    member.name,
@@ -259,11 +247,9 @@ async function runScrapeMode() {
       console.error(`   ❌ Error: ${err.message}`);
       results.push({
         member_name:                    member.name,
-        nikke_id:                       chosenNikke.nikke_id,
         nikke_name:                     chosenNikke.nikke_name,
-        increase_atk:                   "ERROR",
         increase_element_damage_dealt:  "ERROR",
-        error:                          err.message,
+        increase_atk:                   "ERROR",
       });
     }
 
@@ -276,11 +262,9 @@ async function runScrapeMode() {
     header: true,
     columns: [
       { key: "member_name",                   header: "Member Name" },
-      { key: "nikke_id",                      header: "Nikke ID" },
       { key: "nikke_name",                    header: "Nikke Name" },
-      { key: "increase_atk",                  header: "Increase ATK" },
       { key: "increase_element_damage_dealt", header: "Increase Element Damage Dealt" },
-      { key: "error",                         header: "Error" },
+      { key: "increase_atk",                  header: "Increase ATK" },
     ],
   });
 
