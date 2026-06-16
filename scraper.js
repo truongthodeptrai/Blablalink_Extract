@@ -113,7 +113,7 @@ async function loadCookies(page) {
   }
   console.log(`🍪 Loaded ${cookies?.length ?? 0} cookies + ${Object.keys(lsData ?? {}).length} localStorage keys`);
   await page.reload({ waitUntil: "networkidle2" });
-  await sleep(1000);
+  await sleep(2000);
 }
 
 // ---- LOGIN MODE ----
@@ -206,7 +206,7 @@ async function scrapeNikkePage(page, nikkeId, uid, nikkeNameFromCsv) {
 
   // Trả ra kết quả biên (Nếu không tìm thấy tức là bằng 0% hoặc chưa nâng cấp)
   return {
-    nikkeName: extractedData.nikkeName || nikkeNameFromCsv,
+    nikkeName: nikkeNameFromCsv,
     increaseATK: extractedData.increaseATK === "NOT FOUND" ? "0%" : extractedData.increaseATK,
     increaseElementDamageDealt: extractedData.increaseElementDamageDealt === "NOT FOUND" ? "0%" : extractedData.increaseElementDamageDealt
   };
