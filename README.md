@@ -1,11 +1,32 @@
 # BlablaLink NIKKE Scraper
 
-Scrapes **Increase Attack** and **Increase Elemental Damage Dealt** for any combination of members × Nikkes, and saves results to `output.csv`.
+Scrapes **Increase ATK** and **Increase Elemental Damage Dealt** for any combination of members × nikkees, and saves results to `output.csv`.
 
 ---
 
 ## Setup
 
+- Download an IDE you want (recommend Visual Studio Code)
+- After finishing the download, open VS Code and then open the "Blablalink_Extract" folder
+- Go to the official Node.js online and follow its instructions to download it
+- After finishing the Node.js download, go back to VS Code and do Ctrl + ` to open the terminal and type:
+
+```bash
+npm install
+```
+- For Windows users, if it shows something like "running scripts is disable on this system", run
+```bash
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+if it works, type
+```bash
+npm install
+```
+if it gives an error of "Could not read package.json" (because you accidentally have a Blablalink_Extract folder inside the BLABLALINK_EXTRACT project, try using this
+```bash
+cd Blablalink_Extract
+```
+then do
 ```bash
 npm install
 ```
@@ -19,7 +40,7 @@ Edit `input.csv` with your members and the Nikke IDs you want:
 ```
 # MEMBERS
 name,uid
-Alice,MjkwODAtNzU0NjExMTU3NzcyNjczNjM1
+Alice,UIDHere
 Bob,AnotherUIDHere
 
 # NIKKES
@@ -55,6 +76,30 @@ node scraper.js
 # or: npm start
 ```
 
+Choose the nikke that you want to extract the data based on the list order, for example
+```
+:clipboard: Available Nikkes:
+   1. [ID: 16] Rapi: Red Hood
+   2. [ID: 851] Raven
+   3. [ID: 162]  Mihara: Bonding Chain
+   4. [ID: 75]  Diesel: Winter Sweets
+   5. [ID: 471]  Snow White: Heavy Arms
+   6. [ID: 234]  Dorothy: Serendipity
+   7. [ID: 502]  Elegg: Boom and Shock
+   8. [ID: 170]  Privaty
+   9. [ID: 262]  Liberalio
+   10. [ID: 225]  Scarlet: Black Shadow
+   11. [ID: 223]  Nayuta
+   12. [ID: 513]  Little Mermaid
+   13. [ID: 835]  Asuka: Wille
+   14. [ID: 511]  Cinderella
+   15. [ID: 15]  Anis: Sparkling Summer
+   16. [ID: 183]  Maiden: Ice Rose
+   17. [ID: 281]  Moran
+   18. [ID: 17]  Anis: Star
+   19. [ID: 18]  Neon: Vision Eye
+```
+
 Results are saved to `output.csv`.
 
 ---
@@ -84,4 +129,6 @@ Just edit `input.csv` — no code changes needed.
 | `input.csv` | Your roster (members + Nikke IDs) |
 | `output.csv` | Scraped results |
 | `cookies.json` | Your login session — **do not share this** |
-| `debug-*.png` | Screenshots saved when stats aren't found |
+
+
+## WAWRNING: This project is mostly coded by AI so the result isn't 100% accurate. But from my tests, the accuracy is above 90%
