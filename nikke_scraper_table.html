@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nikke Stats Multi-Matrix Viewer with Search</title>
+<title>Nikke Stats Multi-Matrix Viewer with File Deletion</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -17,10 +17,14 @@ h1{font-size:20px;font-weight:500;margin-bottom:1.5rem;color:#1a1a1a}
 #file-input{display:none}
 
 .file-list {display:flex;flex-direction:column;gap:6px;margin-bottom:1rem}
-.file-loaded{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f0f0f0;border-radius:8px;border:0.5px solid #ddd;font-size:13px}
+.file-loaded{display:flex;align-items:center;gap:8px;padding:6px 12px;background:#f0f0f0;border-radius:8px;border:0.5px solid #ddd;font-size:13px}
 .file-loaded i{color:#888}
 .fname{flex:1;color:#1a1a1a;font-weight:500}
 .fsize{color:#888}
+
+/* Nút xóa từng file riêng biệt */
+.del-file-btn {background:none;border:none;cursor:pointer;color:#bb2d3b;font-size:16px;padding:0 4px;line-height:1;display:flex;align-items:center;justify-content:center;transition:color 0.15s}
+.del-file-btn:hover {color:#dc3545}
 
 .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:1rem;background:#fff;padding:12px 16px;border-radius:12px;border:0.5px solid #eee}
 .search-group {display:flex;align-items:center;gap:6px;font-size:13px;color:#666}
@@ -100,8 +104,8 @@ tr:hover td.member-name{background:#fafafa}
 </div>
 
 <script>
-let allRows = [];
-let loadedFiles = new Set();
+// Chuyển đổi sang Map để phân tách dữ liệu độc lập theo từng File Key
+let fileDataMap = new Map();
 
 function ev(e){e.preventDefault();}
 function drop(e){e.preventDefault();handleFiles(e.dataTransfer.files);}
@@ -114,16 +118,19 @@ function handleFiles(files) {
   
   for(let i=0; i<files.length; i++) {
     const f = files[i];
-    if(loadedFiles.has(f.name + f.size)) {
+    const fileKey = f.name + '_' + f.size;
+    
+    if(fileDataMap.has(fileKey)) {
       pendingSubmissions--;
-      continue;
+      continue; // Tránh nạp trùng lập tệp tin
     }
-    loadedFiles.add(f.name + f.size);
-    addFileBadgeToUI(f);
 
     const r = new FileReader();
     r.onload = e => {
-      allRows.push(...parseCSV(e.target.result));
+      const parsed = parseCSV(e.target.result);
+      fileDataMap.set(fileKey, parsed);
+      addFileBadgeToUI(f, fileKey);
+      
       pendingSubmissions--;
       if(pendingSubmissions === 0) render();
     };
@@ -131,16 +138,42 @@ function handleFiles(files) {
   }
 }
 
-function addFileBadgeToUI(f) {
+function addFileBadgeToUI(f, fileKey) {
   const container = document.getElementById('file-list');
   const div = document.createElement('div');
   div.className = 'file-loaded';
-  div.innerHTML = `<i class="ti ti-file-text"></i><span class="fname">${f.name}</span><span class="fsize">${(f.size/1024).toFixed(1)} KB</span>`;
+  div.id = 'file-badge-' + fileKey.replace(/[^a-z0-9]/gi, '_'); // Tạo ID hợp lệ cho thẻ HTML
+  div.innerHTML = `
+    <i class="ti ti-file-text"></i>
+    <span class="fname">${f.name}</span>
+    <span class="fsize">${(f.size/1024).toFixed(1)} KB</span>
+    <button class="del-file-btn" onclick="deleteSpecificFile('${fileKey}', '${div.id}')" title="Delete this file">
+      <i class="ti ti-trash"></i>
+    </button>
+  `;
   container.appendChild(div);
 }
 
-function clearAllFiles()){
-  allRows = []; loadedFiles.clear();
+/* HÀM XÓA MỘT FILE CSV ĐƯỢC CHỈ ĐỊNH */
+function deleteSpecificFile(fileKey, badgeId) {
+  // 1. Xóa dữ liệu trong bộ nhớ Map
+  fileDataMap.delete(fileKey);
+  
+  // 2. Gỡ bỏ giao diện badge hiển thị file đó
+  const badge = document.getElementById(badgeId);
+  if(badge) badge.remove();
+  
+  // Kiểm tra biên: Nếu không còn file nào trong bộ nhớ thì đưa hệ thống về trạng thái rỗng ban đầu
+  if(fileDataMap.size === 0) {
+    clearAllFiles();
+  } else {
+    // 3. Tiến hành vẽ lại bảng dữ liệu ma trận sau khi đã bóc tách dữ liệu file vừa xóa
+    render();
+  }
+}
+
+function clearAllFiles(){
+  fileDataMap.clear();
   document.getElementById('file-input').value = '';
   document.getElementById('file-list').innerHTML = '';
   document.getElementById('search-member').value = '';
@@ -187,17 +220,19 @@ function elemCls(v){return v===null?'na':v>=70?'g':v>=30?'c':'r';}
 function atkCls(v){return v===null?'na':v>=30?'g':v>=20?'c':'r';}
 
 function render(){
-  if(!allRows.length) return;
+  if(fileDataMap.size === 0) return;
   const sortBy = document.getElementById('sort-sel').value;
   
-  // Lấy từ khóa tìm kiếm và chuyển về chữ thường để so sánh không phân biệt hoa thường
   const memberKeyword = document.getElementById('search-member').value.toLowerCase().trim();
   const nikkeKeyword = document.getElementById('search-nikke').value.toLowerCase().trim();
 
   const memberMap = new Map();
   const nikkeSet = new Set();
 
-  allRows.forEach(r => {
+  // Gộp tất cả các mảng dữ liệu lẻ từ cấu trúc Map thành một mảng phẳng tổng hợp để lọc miền dữ liệu
+  const combinedRows = [].concat(...fileDataMap.values());
+
+  combinedRows.forEach(r => {
     if(!memberMap.has(r.name)){
       memberMap.set(r.name, { name: r.name, sync: r.sync, stats: {} });
     }
@@ -215,19 +250,16 @@ function render(){
     }
   });
 
-  // 1. Áp dụng Domain Testing lọc danh sách Thành viên theo từ khóa
   let members = Array.from(memberMap.values());
   if(memberKeyword) {
     members = members.filter(m => m.name.toLowerCase().includes(memberKeyword));
   }
 
-  // 2. Áp dụng Domain Testing lọc danh sách Cột Nikke theo từ khóa
   let nikkes = Array.from(nikkeSet);
   if(nikkeKeyword) {
     nikkes = nikkes.filter(n => n.toLowerCase().includes(nikkeKeyword));
   }
 
-  // Kiểm tra biên nếu bộ lọc làm rỗng dữ liệu hiển thị
   if(members.length === 0 || nikkes.length === 0) {
     document.getElementById('out').innerHTML = '<div class="empty">No matching results found for your search criteria.</div>';
     return;
