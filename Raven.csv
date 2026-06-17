@@ -1,10 +1,10 @@
 Member Name,Sync Level,Nikke ID,Nikke Name,Increase Element Damage Dealt,Increase ATK,Status
 Komura,668,851,Raven,94.21%,14.63%,OK
-Shikikan,-,851,Raven,-,-,NOT LOADED
+Shikikan,681,851,Raven,105.43%,43.74%,OK
 E19,681,851,Raven,97.02%,42.31%,OK
 QTB,681,851,Raven,88.62%,41.62%,OK
 Zef,699,851,Raven,94.23%,34.03%,OK
-Flame,690,851,Raven,42.91%,33.15%,OK
+Flame,-,851,Raven,-,-,NOT LOADED
 Rexv,689,851,Raven,87.22%,13.22%,OK
 CCDC08,701,851,Raven,68.99%,11.11%,OK
 DracusJ,698,851,Raven,97.03%,48.66%,OK
@@ -15,7 +15,7 @@ Vertigo,701,851,Raven,91.42%,25.58%,OK
 Peach,722,851,Raven,95.62%,39.50%,OK
 View,723,851,Raven,84.41%,36.68%,OK
 Avalon,715,851,Raven,98.42%,28.39%,OK
-Hiko,-,851,Raven,-,-,NOT LOADED
+Hiko,710,851,Raven,69.27%,30.50%,OK
 GLordVJ,711,851,Raven,84.41%,17.28%,OK
 Lone,721,851,Raven,87.22%,6.88%,OK
 Hems,-,851,Raven,-,-,NOT LOADED
@@ -24,7 +24,7 @@ Oniichan,723,851,Raven,55.25%,11.11%,OK
 An,728,851,Raven,59.20%,43.02%,OK
 Shika,765,851,Raven,85.81%,36.84%,OK
 Nikke69,727,851,Raven,78.80%,25.74%,OK
-Gohst,-,851,Raven,-,-,NOT LOADED
+Gohst,744,851,Raven,87.22%,36.14%,OK
 Terra854,0,851,Raven,0%,0%,NO GEAR
 Ethan,781,851,Raven,98.44%,20.65%,OK
 Kamazune,764,851,Raven,92.83%,18.69%,OK
