@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nikke Stats Multi-Matrix Viewer with Search</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f5f5f5;color:#1a1a1a;padding:2rem;min-height:100vh}
+h1{font-size:20px;font-weight:500;margin-bottom:1.5rem;color:#1a1a1a}
+.upload-area{border:1.5px dashed #ccc;border-radius:12px;padding:2rem;text-align:center;cursor:pointer;transition:background 0.15s;margin-bottom:1rem;background:#fff}
+.upload-area:hover{background:#f0f0f0}
+.upload-area i{font-size:28px;color:#888;display:block;margin-bottom:8px}
+.upload-area p{font-size:13px;color:#888;margin:0}
+.upload-area p span{color:#1a1a1a;font-weight:500;text-decoration:underline;cursor:pointer}
+#file-input{display:none}
+
+.file-list {display:flex;flex-direction:column;gap:6px;margin-bottom:1rem}
+.file-loaded{display:flex;align-items:center;gap:8px;padding:8px 12px;background:#f0f0f0;border-radius:8px;border:0.5px solid #ddd;font-size:13px}
+.file-loaded i{color:#888}
+.fname{flex:1;color:#1a1a1a;font-weight:500}
+.fsize{color:#888}
+
+.controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:1rem;background:#fff;padding:12px 16px;border-radius:12px;border:0.5px solid #eee}
+.search-group {display:flex;align-items:center;gap:6px;font-size:13px;color:#666}
+.search-input {font-size:13px;padding:6px 10px;border-radius:8px;border:0.5px solid #ccc;background:#fff;color:#1a1a1a;width:160px}
+.search-input:focus {outline:none;border-color:#888}
+select{font-size:13px;padding:6px 10px;border-radius:8px;border:0.5px solid #ccc;background:#fff;color:#1a1a1a}
+button{font-size:13px;padding:6px 14px;border-radius:8px;border:0.5px solid #ccc;background:transparent;color:#1a1a1a;cursor:pointer}
+button:hover{background:#f0f0f0}
+
+.legend{display:flex;gap:12px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;background:#fff;padding:10px 14px;border-radius:8px;border:0.5px solid #eee}
+.leg{display:flex;align-items:center;gap:5px;font-size:12px;color:#666}
+.dot{width:12px;height:12px;border-radius:3px}
+.sep{color:#ccc;font-size:12px}
+
+.tbl-wrap{overflow-x:auto;background:#fff;border-radius:12px;border:0.5px solid #eee;max-height:80vh;overflow-y:auto}
+table{border-collapse:collapse;width:100%;font-size:12px;min-width:max-content}
+th{background:#f8f8f8;color:#1a1a1a;font-weight:500;padding:6px 8px;border:0.5px solid #ddd;text-align:center;white-space:nowrap;position:sticky;top:0;z-index:10}
+th.member-header{position:sticky;left:0;background:#f8f8f8;z-index:11}
+td{padding:6px 8px;border:0.5px solid #ddd;color:#1a1a1a;white-space:nowrap;text-align:center}
+td.member-name{position:sticky;left:0;background:#fff;font-weight:bold;text-align:left;z-index:5}
+tr:hover td.member-name{background:#fafafa}
+
+.nikke-header-block {display:flex;flex-direction:column;align-items:center;gap:4px;min-width:70px}
+.nikke-avatar {width:40px;height:40px;border-radius:6px;object-fit:cover;border:1px solid #ccc;background:#e0e0e0}
+.nikke-title {max-width:75px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:#444}
+
+.stat-cell{font-weight:600;font-size:11px;width:38px}
+.g{background:#d4edda;color:#1a5c2a}
+.c{background:#f5ecd7;color:#7a5a1e}
+.r{background:#f8d7da;color:#7c1f22}
+.empty{text-align:center;padding:3rem;color:#aaa;font-size:13px}
+</style>
+</head>
+<body>
+<h1>Nikke Stats Multi-Matrix Viewer</h1>
+
+<div id="upload-area" class="upload-area" onclick="document.getElementById('file-input').click()" ondragover="ev(event)" ondrop="drop(event)">
+  <i class="ti ti-upload"></i>
+  <p><span>Click to upload</span> or drag & drop one or multiple CSV files</p>
+</div>
+<input type="file" id="file-input" accept=".csv,text/csv" multiple onchange="filesChosen(event)">
+
+<div class="file-list" id="file-list"></div>
+
+<div id="controls" class="controls" style="display:none">
+  <div class="search-group">
+    <i class="ti ti-user"></i>
+    <input type="text" id="search-member" class="search-input" placeholder="Search Member..." oninput="render()">
+  </div>
+  <div class="search-group">
+    <i class="ti ti-sword"></i>
+    <input type="text" id="search-nikke" class="search-input" placeholder="Search Nikke..." oninput="render()">
+  </div>
+  <span style="font-size:13px;color:#ccc;margin:0 4px">|</span>
+  <span style="font-size:13px;color:#666">Sort Members:</span>
+  <select id="sort-sel" onchange="render()">
+    <option value="name">Member Name</option>
+    <option value="sync">Sync Level</option>
+  </select>
+  <button style="margin-left:auto;font-size:12px;padding:4px 10px" onclick="clearAllFiles()">Clear All</button>
+</div>
+
+<div class="legend">
+  <span style="font-size:12px;color:#666;font-weight:500">Elem:</span>
+  <span class="leg"><span class="dot" style="background:#d4edda"></span>≥70%</span>
+  <span class="leg"><span class="dot" style="background:#f5ecd7"></span>30–70%</span>
+  <span class="leg"><span class="dot" style="background:#f8d7da"></span>&lt;30%</span>
+  <span class="sep">|</span>
+  <span style="font-size:12px;color:#666;font-weight:500">ATK:</span>
+  <span class="leg"><span class="dot" style="background:#d4edda"></span>≥30%</span>
+  <span class="leg"><span class="dot" style="background:#f5ecd7"></span>20–30%</span>
+  <span class="leg"><span class="dot" style="background:#f8d7da"></span>&lt;20%</span>
+</div>
+
+<div class="tbl-wrap">
+  <div id="out" class="empty">Upload one or multiple CSV files to get started.</div>
+</div>
+
+<script>
+let allRows = [];
+let loadedFiles = new Set();
+
+function ev(e){e.preventDefault();}
+function drop(e){e.preventDefault();handleFiles(e.dataTransfer.files);}
+function filesChosen(e){handleFiles(e.target.files);}
+
+function handleFiles(files) {
+  if(!files.length) return;
+  document.getElementById('controls').style.display='flex';
+  let pendingSubmissions = files.length;
+  
+  for(let i=0; i<files.length; i++) {
+    const f = files[i];
+    if(loadedFiles.has(f.name + f.size)) {
+      pendingSubmissions--;
+      continue;
+    }
+    loadedFiles.add(f.name + f.size);
+    addFileBadgeToUI(f);
+
+    const r = new FileReader();
+    r.onload = e => {
+      allRows.push(...parseCSV(e.target.result));
+      pendingSubmissions--;
+      if(pendingSubmissions === 0) render();
+    };
+    r.readAsText(f);
+  }
+}
+
+function addFileBadgeToUI(f) {
+  const container = document.getElementById('file-list');
+  const div = document.createElement('div');
+  div.className = 'file-loaded';
+  div.innerHTML = `<i class="ti ti-file-text"></i><span class="fname">${f.name}</span><span class="fsize">${(f.size/1024).toFixed(1)} KB</span>`;
+  container.appendChild(div);
+}
+
+function clearAllFiles()){
+  allRows = []; loadedFiles.clear();
+  document.getElementById('file-input').value = '';
+  document.getElementById('file-list').innerHTML = '';
+  document.getElementById('search-member').value = '';
+  document.getElementById('search-nikke').value = '';
+  document.getElementById('controls').style.display = 'none';
+  document.getElementById('out').innerHTML = '<div class="empty">Upload one or multiple CSV files to get started.</div>';
+}
+
+function parseCSV(text){
+  const lines=text.trim().split(/\r?\n/);
+  if(lines.length<2)return[];
+  const hdr=lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,'').toLowerCase());
+  const fi=k=>hdr.findIndex(h=>h.includes(k));
+  const iName=fi('member');
+  const iSync=fi('sync');
+  const iNikke=fi('nikke name');
+  const iElem=fi('element');
+  const iATK=fi('increase atk')>=0?fi('increase atk'):fi('atk');
+  const iStatus=fi('status');
+  return lines.slice(1).map(l=>{
+    const cols=[];let cur='',inQ=false;
+    for(let i=0;i<l.length;i++){
+      if(l[i]==='"'){inQ=!inQ;}
+      else if(l[i]===','&&!inQ){cols.push(cur);cur='';}
+      else cur+=l[i];
+    }
+    cols.push(cur);
+    const c=cols.map(x=>(x||'').trim().replace(/^"|"$/g,''));
+    return{name:c[iName]||'',sync:c[iSync]||'-',nikke:c[iNikke]||'',elem:c[iElem]||'-',atk:c[iATK]||'-',status:c[iStatus]||''};
+  }).filter(r=>r.name);
+}
+
+function getNikkeAvatar(nikkeName) {
+  if(!nikkeName) return '';
+  return `https://ui-avatars.com/api/?name=${encodeURIComponent(nikkeName)}&background=random&size=120&rounded=false`;
+}
+
+function pct(v){
+  if(!v||v==='-'||v==='N/A')return null;
+  const n=parseFloat((v||'').replace('%',''));
+  return isNaN(n)?null:n;
+}
+function elemCls(v){return v===null?'na':v>=70?'g':v>=30?'c':'r';}
+function atkCls(v){return v===null?'na':v>=30?'g':v>=20?'c':'r';}
+
+function render(){
+  if(!allRows.length) return;
+  const sortBy = document.getElementById('sort-sel').value;
+  
+  // Lấy từ khóa tìm kiếm và chuyển về chữ thường để so sánh không phân biệt hoa thường
+  const memberKeyword = document.getElementById('search-member').value.toLowerCase().trim();
+  const nikkeKeyword = document.getElementById('search-nikke').value.toLowerCase().trim();
+
+  const memberMap = new Map();
+  const nikkeSet = new Set();
+
+  allRows.forEach(r => {
+    if(!memberMap.has(r.name)){
+      memberMap.set(r.name, { name: r.name, sync: r.sync, stats: {} });
+    }
+    if(r.sync !== '-' && r.sync !== '') {
+      const currentSync = parseInt(memberMap.get(r.name).sync) || 0;
+      const newSync = parseInt(r.sync) || 0;
+      if(newSync > currentSync) memberMap.set(r.name, {...memberMap.get(r.name), sync: r.sync});
+    }
+    if(r.nikke){
+      nikkeSet.add(r.nikke);
+      const existingStat = memberMap.get(r.name).stats[r.nikke];
+      if(!existingStat || r.status === 'OK' || (pct(r.elem) > pct(existingStat.elem))) {
+        memberMap.get(r.name).stats[r.nikke] = { elem: r.elem, atk: r.atk, status: r.status };
+      }
+    }
+  });
+
+  // 1. Áp dụng Domain Testing lọc danh sách Thành viên theo từ khóa
+  let members = Array.from(memberMap.values());
+  if(memberKeyword) {
+    members = members.filter(m => m.name.toLowerCase().includes(memberKeyword));
+  }
+
+  // 2. Áp dụng Domain Testing lọc danh sách Cột Nikke theo từ khóa
+  let nikkes = Array.from(nikkeSet);
+  if(nikkeKeyword) {
+    nikkes = nikkes.filter(n => n.toLowerCase().includes(nikkeKeyword));
+  }
+
+  // Kiểm tra biên nếu bộ lọc làm rỗng dữ liệu hiển thị
+  if(members.length === 0 || nikkes.length === 0) {
+    document.getElementById('out').innerHTML = '<div class="empty">No matching results found for your search criteria.</div>';
+    return;
+  }
+
+  members.sort((a,b)=>{
+    if(sortBy==='name') return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
+    if(sortBy==='sync') return (parseInt(b.sync)||0) - (parseInt(a.sync)||0);
+    return 0;
+  });
+
+  let html = `<table><thead><tr>`;
+  html += `<th rowspan="2" class="member-header">Member</th>`;
+  html += `<th rowspan="2" style="position:sticky;top:0;background:#f8f8f8;">Sync</th>`;
+  
+  nikkes.forEach(n => {
+    const avatarUrl = getNikkeAvatar(n);
+    html += `<th colspan="2">
+      <div class="nikke-header-block">
+        <img class="nikke-avatar" src="${avatarUrl}" alt="${n}" title="${n}" onerror="this.src='https://placehold.co/40x40?text=NIKKE'">
+        <span class="nikke-title" title="${n}">${n}</span>
+      </div>
+    </th>`;
+  });
+  html += `</tr><tr>`;
+  
+  nikkes.forEach(() => {
+    html += `<th style="font-size:10px;top:69px;">El</th>`;
+    html += `<th style="font-size:10px;top:69px;">At</th>`;
+  });
+  html += `</tr></thead><tbody>`;
+
+  members.forEach(m => {
+    html += `<tr>`;
+    html += `<td class="member-name">${m.name}</td>`;
+    html += `<td style="text-align:right;font-weight:500;">${m.sync}</td>`;
+    
+    nikkes.forEach(n => {
+      const data = m.stats[n];
+      if (data && data.status !== 'NOT OWNED' && data.status !== 'PRIVATE') {
+        const ev = pct(data.elem), av = pct(data.atk);
+        const ec = elemCls(ev), ac = atkCls(av);
+        
+        const finalEc = (ev === 0 || ec === 'na') ? 'r' : ec;
+        const finalAc = (av === 0 || ac === 'na') ? 'r' : ac;
+
+        const dispElem = (ev === null || ev === 0) ? '0' : data.elem.replace('%','');
+        const dispAtk = (av === null || av === 0) ? '0' : data.atk.replace('%','');
+
+        html += `<td class="stat-cell ${finalEc}">${dispElem}</td>`;
+        html += `<td class="stat-cell ${finalAc}">${dispAtk}</td>`;
+      } else {
+        html += `<td class="stat-cell r">0</td>`;
+        html += `<td class="stat-cell r">0</td>`;
+      }
+    });
+    html += `</tr>`;
+  });
+
+  html += `</tbody></table>`;
+  document.getElementById('out').innerHTML = html;
+}
+</script>
+</body>
+</html>

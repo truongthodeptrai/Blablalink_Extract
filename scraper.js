@@ -159,7 +159,6 @@ async function detectPageState(page, expectedNikkeId) {
     const bodyHTML = document.body.innerHTML || "";
 
     // --- Private profile signals ---
-    // The page shows a lock icon, "private", or redirects to a generic profile page
     const privateKeywords = ["private", "this profile is private", "프라이빗", "비공개"];
     for (const kw of privateKeywords) {
       if (bodyText.toLowerCase().includes(kw)) return "private";
@@ -168,7 +167,6 @@ async function detectPageState(page, expectedNikkeId) {
     // If the page has no "Equipment" tab at all, it's likely private or failed to load
     const hasEquipmentTab = bodyText.includes("Equipment");
     if (!hasEquipmentTab) {
-      // Check if there's a login prompt instead
       const loginKeywords = ["sign in", "log in", "login", "로그인"];
       for (const kw of loginKeywords) {
         if (bodyText.toLowerCase().includes(kw)) return "private";
@@ -180,21 +178,14 @@ async function detectPageState(page, expectedNikkeId) {
     const hasEquipmentEffects = bodyText.includes("Equipment Effects");
     if (!hasEquipmentEffects) return "not_loaded";
 
-    // --- Check if the correct Nikke is shown ---
-    // BlablaLink embeds the nikke ID in the page URL or data attributes
-    // We check if any element references the expected nikke ID
     const hasCorrectNikke =
       bodyHTML.includes(`"nikke":${nikkeId}`) ||
       bodyHTML.includes(`"nikke":"${nikkeId}"`) ||
       bodyHTML.includes(`nikke=${nikkeId}`) ||
-      // Fallback: if Equipment Effects loaded at all, assume correct nikke
       hasEquipmentEffects;
 
     if (!hasCorrectNikke) return "not_owned";
 
-    // --- Does the member actually own this nikke? ---
-    // If "No Effects" appears in ALL equipment slots, they either don't own it
-    // or have zero gear — we handle this as valid 0% data, not an error
     return "ok";
   }, expectedNikkeId);
 }
@@ -224,12 +215,25 @@ async function scrapeNikkePage(page, nikkeId, uid, nikkeNameFromCsv) {
       { timeout: 15000 }
     );
   } catch {
-    // Still not loaded — do one more hard wait before giving up
     console.log(`   ⚠ Slow render, waiting extra 5s...`);
     await sleep(5000);
   }
 
-  await sleep(800);
+  // Also wait specifically for the LV### sync level element to appear
+  try {
+    await page.waitForFunction(
+      () => {
+        const els = Array.from(document.querySelectorAll("div, span, p, td, label"))
+          .filter(el => el.children.length === 0);
+        return els.some(el => /^LV\d{1,4}$/i.test(el.innerText?.trim() || ""));
+      },
+      { timeout: 8000 }
+    );
+  } catch {
+    // LV element not found in time — extraction will still try all fallback strategies
+  }
+
+  await sleep(500);
 
   // ---- Detect page state before extracting ----
   const pageState = await detectPageState(page, nikkeId);
@@ -264,37 +268,28 @@ async function scrapeNikkePage(page, nikkeId, uid, nikkeNameFromCsv) {
     if (topContainer) {
       const containerText = topContainer.innerText || "";
 
-      // Count how many gear slots show "No Effects"
-      // There are 4 gear slots — if all 4 say "No Effects" and no % values exist,
-      // the member owns the Nikke but has zero gear upgrades
       const noEffectsCount = (containerText.match(/No Effects/g) || []).length;
       const percentMatches = containerText.match(/\d+\.?\d*%/g) || [];
       allSlotsNoEffects = noEffectsCount >= 4 && percentMatches.length === 0;
 
-      // The stats are in a 2-column grid: [Label] [Value] [Label] [Value]
-      // Strategy: find the label element, then look for the NEXT sibling that
-      // contains a % value — that sibling is the value cell.
       const childElements = Array.from(topContainer.querySelectorAll("div, span, td, p"));
 
       for (let i = 0; i < childElements.length; i++) {
         const text = childElements[i].innerText?.trim() || "";
         const lower = text.toLowerCase();
 
-        // Match label — must be a short element (label only, not a container)
         const isATKLabel  = (lower === "increase atk") && childElements[i].children.length === 0;
         const isElemLabel = (lower === "increase element damage dealt") && childElements[i].children.length === 0;
 
         if (isATKLabel || isElemLabel) {
           let value = null;
 
-          // Look at next siblings for a % value
           for (let j = i + 1; j < Math.min(i + 4, childElements.length); j++) {
             const sibText = childElements[j].innerText?.trim() || "";
-            const match = sibText.match(/^(\d+\.?\d*%)$/); // must be ONLY a % value
+            const match = sibText.match(/^(\d+\.?\d*%)$/);
             if (match) { value = match[1]; break; }
           }
 
-          // Fallback: check immediate parent's text but skip the label itself
           if (!value) {
             const parentText = childElements[i].parentElement?.innerText || "";
             const labelRemoved = parentText.replace(text, "").trim();
@@ -308,26 +303,46 @@ async function scrapeNikkePage(page, nikkeId, uid, nikkeNameFromCsv) {
       }
     }
 
-    // Sync level — exact "LV###" standalone label only
-    const allTextEls = Array.from(document.querySelectorAll("div, span, p, td, label"));
+    // Sync level — Strategy 1: exact "LV###" standalone leaf element
+    const allTextEls = Array.from(document.querySelectorAll("div, span, p, td, label, h1, h2, h3, h4"));
     for (const el of allTextEls) {
       if (el.children.length > 0) continue;
       const text = el.innerText?.trim() || "";
       if (/^LV\d{1,4}$/i.test(text)) {
         const num = parseInt(text.replace(/^LV/i, ""), 10);
-        if (num >= 10) { syncLevel = num; break; }
+        if (num >= 1) { syncLevel = num; break; }
       }
     }
-    // Fallback sync level
+
+    // Strategy 2: short text with optional space "LV 699"
     if (!syncLevel) {
       for (const el of allTextEls) {
         const text = el.innerText?.trim() || "";
         if (text.length > 10) continue;
-        const match = text.match(/^LV\s*(\d+)$/i);
+        const match = text.match(/^LV\s*(\d{1,4})$/i);
         if (match) {
           const num = parseInt(match[1], 10);
-          if (num >= 10) { syncLevel = num; break; }
+          if (num >= 1) { syncLevel = num; break; }
         }
+      }
+    }
+
+    // Strategy 3: range/number input element (the actual slider)
+    if (!syncLevel) {
+      const inputs = Array.from(document.querySelectorAll("input[type='range'], input[type='number']"));
+      for (const inp of inputs) {
+        const val = parseInt(inp.value, 10);
+        if (!isNaN(val) && val >= 1 && val <= 800) { syncLevel = val; break; }
+      }
+    }
+
+    // Strategy 4: scan all page text for any LV + digits (last resort)
+    if (!syncLevel) {
+      const fullText = document.body.innerText || "";
+      const matches = [...fullText.matchAll(/\bLV\s*(\d{1,4})\b/gi)];
+      for (const m of matches) {
+        const num = parseInt(m[1], 10);
+        if (num >= 1 && num <= 800) { syncLevel = num; break; }
       }
     }
 
@@ -338,20 +353,19 @@ async function scrapeNikkePage(page, nikkeId, uid, nikkeNameFromCsv) {
   const atk  = extractedData.increaseATK ?? "0%";
   const elem = extractedData.increaseElementDamageDealt ?? "0%";
 
-  // Only mark NOT OWNED if page explicitly has no Equipment Effects container at all
   if (pageState === "not_owned") {
     console.log(`   ❌ Member does not own this Nikke`);
     return { status: "NOT OWNED", nikkeName: nikkeNameFromCsv, syncLevel: "-", increaseATK: "-", increaseElementDamageDealt: "-" };
   }
 
-  // NO GEAR: page explicitly shows "No Effects" on all slots AND both stats are 0%
-  // This means they own the Nikke but haven't equipped/upgraded any gear
   const hasNoGearUpgrades = extractedData.allSlotsNoEffects && atk === "0%" && elem === "0%";
+  const syncLevel = extractedData.syncLevel ?? null;
 
   return {
     status:                      hasNoGearUpgrades ? "NO GEAR" : "OK",
     nikkeName:                   nikkeNameFromCsv,
-    syncLevel:                   extractedData.syncLevel ?? 0,
+    syncLevel:                   syncLevel !== null ? syncLevel : "N/A",
+    syncLevelNote:               syncLevel === null ? "* Could not detect sync level" : "",
     increaseATK:                 atk,
     increaseElementDamageDealt:  elem,
   };
@@ -393,11 +407,10 @@ async function runScrapeMode() {
     const member = members[i];
     console.log(`\n🔗 [${member.name} × ${chosenNikke.nikke_name}]`);
 
-      // Auto-retry up to 3 attempts for technical failures (NOT LOADED / ERROR)
-      // PRIVATE / NOT OWNED / NO GEAR / OK are final — no retry needed
+      // Only retry technical failures — definitive statuses never need retrying
       const RETRYABLE = ["NOT LOADED", "ERROR"];
       const MAX_ATTEMPTS = 3;
-      const RETRY_DELAYS = [0, 4000, 6000]; // delay before each attempt
+      const RETRY_DELAYS = [0, 4000, 6000];
 
       let stats = null;
       let lastError = null;
@@ -412,14 +425,14 @@ async function runScrapeMode() {
           stats = await scrapeNikkePage(page, chosenNikke.nikke_id, member.uid, chosenNikke.nikke_name);
         } catch (err) {
           lastError = err;
-          stats = { status: "ERROR", nikkeName: chosenNikke.nikke_name, syncLevel: "-", increaseATK: "-", increaseElementDamageDealt: "-" };
+          stats = { status: "ERROR", nikkeName: chosenNikke.nikke_name, syncLevel: "-", syncLevelNote: "", increaseATK: "-", increaseElementDamageDealt: "-" };
         }
 
-        if (!RETRYABLE.includes(stats.status)) break; // got a real result, stop retrying
+        if (!RETRYABLE.includes(stats.status)) break;
+        if (stats.status === "NOT OWNED" || stats.status === "PRIVATE") break;
         if (attempt < MAX_ATTEMPTS) console.log(`   ⚠ Got "${stats.status}" — will retry...`);
       }
 
-      // Status emoji for console
       const statusEmoji = {
         "OK":         "✅",
         "NO GEAR":    "⚙️ ",
@@ -441,31 +454,31 @@ async function runScrapeMode() {
         sync_level:                     stats.syncLevel,
         nikke_id:                       chosenNikke.nikke_id,
         nikke_name:                     stats.nikkeName,
-        increase_atk:                   stats.increaseATK,
         increase_element_damage_dealt:  stats.increaseElementDamageDealt,
+        increase_atk:                   stats.increaseATK,
         status:                         stats.status,
+        notes:                          stats.syncLevelNote ?? "",
       });
 
     if (i < members.length - 1) await sleep(DELAY_MS);
   }
 
   // ---- Post-run re-scrape for NOT LOADED members ----
-  const failedMembers = members.filter((m, i) => 
+  const failedMembers = members.filter((m, i) =>
     results[i] && (results[i].status === "NOT LOADED" || results[i].status === "ERROR")
   );
 
   if (failedMembers.length > 0) {
-    console.log(`
-🔁 Post-run recovery: ${failedMembers.length} member(s) to retry...`);
+    console.log(`\n🔁 Post-run recovery: ${failedMembers.length} member(s) to retry...`);
 
     const browser2 = await puppeteer.launch({
       headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"],
       executablePath:
         process.platform === "win32"
-          ? (fs.existsSync("C:\Program Files\Google\Chrome\Application\chrome.exe")
-              ? "C:\Program Files\Google\Chrome\Application\chrome.exe"
-              : "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe")
+          ? (fs.existsSync("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
+              ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+              : "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe")
           : undefined
     });
 
@@ -477,16 +490,12 @@ async function runScrapeMode() {
     await loadCookies(page2);
 
     for (const member of failedMembers) {
-      // Find this member's index in results
       const resultIdx = results.findIndex(r => r.member_name === member.name);
-      console.log(`
-🔄 Recovering [${member.name} × ${chosenNikke.nikke_name}]`);
+      console.log(`\n🔄 Recovering [${member.name} × ${chosenNikke.nikke_name}]`);
 
-      // Give server a breather before retrying
       await sleep(5000);
 
       let recovered = null;
-      // Up to 3 more attempts in recovery pass
       for (let attempt = 1; attempt <= 3; attempt++) {
         if (attempt > 1) {
           console.log(`   ↪ Recovery attempt ${attempt}/3...`);
@@ -495,7 +504,7 @@ async function runScrapeMode() {
         try {
           recovered = await scrapeNikkePage(page2, chosenNikke.nikke_id, member.uid, chosenNikke.nikke_name);
         } catch (err) {
-          recovered = { status: "ERROR", nikkeName: chosenNikke.nikke_name, syncLevel: "-", increaseATK: "-", increaseElementDamageDealt: "-" };
+          recovered = { status: "ERROR", nikkeName: chosenNikke.nikke_name, syncLevel: "-", syncLevelNote: "", increaseATK: "-", increaseElementDamageDealt: "-" };
         }
         if (recovered.status !== "NOT LOADED" && recovered.status !== "ERROR") break;
         if (attempt < 3) console.log(`   ⚠ Still "${recovered.status}" — retrying...`);
@@ -509,24 +518,23 @@ async function runScrapeMode() {
         console.log(`   ✅ Increase ATK                 : ${recovered.increaseATK}`);
       }
 
-      // Replace the old failed result with the recovered one
       if (resultIdx !== -1) {
         results[resultIdx] = {
           member_name:                    member.name,
           sync_level:                     recovered.syncLevel,
           nikke_id:                       chosenNikke.nikke_id,
           nikke_name:                     recovered.nikkeName,
-          increase_atk:                   recovered.increaseATK,
           increase_element_damage_dealt:  recovered.increaseElementDamageDealt,
+          increase_atk:                   recovered.increaseATK,
           status:                         recovered.status,
+          notes:                          recovered.syncLevelNote ?? "",
         };
       }
     }
 
     await browser2.close();
   } else {
-    console.log(`
-✅ No failed members to recover.`);
+    console.log(`\n✅ No failed members to recover.`);
   }
 
   await browser.close();
@@ -541,6 +549,7 @@ async function runScrapeMode() {
       { key: "increase_element_damage_dealt", header: "Increase Element Damage Dealt" },
       { key: "increase_atk",                  header: "Increase ATK" },
       { key: "status",                        header: "Status" },
+      { key: "notes",                         header: "Notes" },
     ],
   });
 
