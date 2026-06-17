@@ -7,17 +7,25 @@ const { stringify } = require("csv-stringify/sync");
 // ============================================================
 //  FILES & CONFIG
 // ============================================================
+const path         = require("path");
 const INPUT_FILE   = "input.csv";
 const COOKIES_FILE = "cookies.json";
 const BASE_URL     = "https://www.blablalink.com/shiftyspad/nikke";
 const LOGIN_URL    = "https://www.blablalink.com";
 const DELAY_MS     = 2000;
+const OUTPUT_DIR   = "Nikke_stats";
 
 function sanitizeFileName(name) {
   return name.replace(/[\/\\?%*:|"<>\s]+/g, "_");
 }
+
 function getOutputFilePath(nikkeName) {
-  return `${sanitizeFileName(nikkeName)}.csv`;
+  if (!fs.existsSync(OUTPUT_DIR)){
+    fs.mkdirSync(OUTPUT_DIR, { recursive: true });
+    console.log(`📁 Created directory: ${OUTPUT_DIR}/`);
+  }
+  
+  return path.join(OUTPUT_DIR, `${sanitizeFileName(nikkeName)}.csv`);
 }
 // ============================================================
 
