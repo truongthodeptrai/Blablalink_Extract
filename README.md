@@ -132,4 +132,8 @@ Just edit `input.csv` — no code changes needed.
 | `cookies.json` | Your login session — **do not share this** |
 
 
-## WAWRNING: This project is mostly coded by AI so the result isn't 100% accurate. But from my tests, the accuracy is above 90%
+## Opening HTML file
+
+Just drag the html file in the folder to the browser and you're good to go
+
+## Disclaimer: This project is 100% AI so i don't have much credibility for this
