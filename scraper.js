@@ -1,6 +1,5 @@
 const puppeteer = require("puppeteer");
 const fs = require("fs");
-const path = require("path");
 const readline = require("readline");
 const { parse } = require("csv-parse/sync");
 const { stringify } = require("csv-stringify/sync");
@@ -9,11 +8,17 @@ const { stringify } = require("csv-stringify/sync");
 //  FILES & CONFIG
 // ============================================================
 const INPUT_FILE   = "input.csv";
-const OUTPUT_FILE  = "output.csv";
 const COOKIES_FILE = "cookies.json";
 const BASE_URL     = "https://www.blablalink.com/shiftyspad/nikke";
 const LOGIN_URL    = "https://www.blablalink.com";
-const DELAY_MS     = 1500;
+const DELAY_MS     = 2000;
+
+function sanitizeFileName(name) {
+  return name.replace(/[\/\\?%*:|"<>\s]+/g, "_");
+}
+function getOutputFilePath(nikkeName) {
+  return `${sanitizeFileName(nikkeName)}.csv`;
+}
 // ============================================================
 
 const isLoginMode = process.argv.includes("--login");
@@ -113,14 +118,26 @@ async function loadCookies(page) {
   }
   console.log(`🍪 Loaded ${cookies?.length ?? 0} cookies + ${Object.keys(lsData ?? {}).length} localStorage keys`);
   await page.reload({ waitUntil: "networkidle2" });
-  await sleep(2000);
+  await sleep(1000);
 }
 
 // ---- LOGIN MODE ----
 async function runLoginMode() {
   console.log(`\n🔐 LOGIN MODE — a browser window will open.`);
   console.log(`   Log in, then come back here and press ENTER.\n`);
-  const browser = await puppeteer.launch({ headless: false, defaultViewport: null, args: ["--start-maximized"] });
+
+  const browser = await puppeteer.launch({
+    headless: false,
+    defaultViewport: null,
+    args: ["--start-maximized", "--no-sandbox"],
+    executablePath:
+      process.platform === "win32"
+        ? (fs.existsSync("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
+            ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+            : "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe")
+        : undefined
+  });
+
   const page = await browser.newPage();
   await page.goto(LOGIN_URL, { waitUntil: "networkidle2" });
   await new Promise((resolve) => {
@@ -129,10 +146,62 @@ async function runLoginMode() {
   });
   await saveCookies(page);
   await browser.close();
-  console.log(`\n✅ Session saved! Now run: node scraper.js\n`);
+  console.log(`\n✅ Session saved! Now you can run Scrape Mode.\n`);
 }
 
-// ---- SCRAPE ONE NIKKE PAGE (TARGETED TOP CONTAINER MODE) ----
+// ============================================================
+//  PAGE STATE DETECTION
+//  Returns one of: "ok" | "private" | "not_owned" | "not_loaded"
+// ============================================================
+async function detectPageState(page, expectedNikkeId) {
+  return await page.evaluate((nikkeId) => {
+    const bodyText = document.body.innerText || "";
+    const bodyHTML = document.body.innerHTML || "";
+
+    // --- Private profile signals ---
+    // The page shows a lock icon, "private", or redirects to a generic profile page
+    const privateKeywords = ["private", "this profile is private", "프라이빗", "비공개"];
+    for (const kw of privateKeywords) {
+      if (bodyText.toLowerCase().includes(kw)) return "private";
+    }
+
+    // If the page has no "Equipment" tab at all, it's likely private or failed to load
+    const hasEquipmentTab = bodyText.includes("Equipment");
+    if (!hasEquipmentTab) {
+      // Check if there's a login prompt instead
+      const loginKeywords = ["sign in", "log in", "login", "로그인"];
+      for (const kw of loginKeywords) {
+        if (bodyText.toLowerCase().includes(kw)) return "private";
+      }
+      return "not_loaded";
+    }
+
+    // --- Equipment Effects section present? ---
+    const hasEquipmentEffects = bodyText.includes("Equipment Effects");
+    if (!hasEquipmentEffects) return "not_loaded";
+
+    // --- Check if the correct Nikke is shown ---
+    // BlablaLink embeds the nikke ID in the page URL or data attributes
+    // We check if any element references the expected nikke ID
+    const hasCorrectNikke =
+      bodyHTML.includes(`"nikke":${nikkeId}`) ||
+      bodyHTML.includes(`"nikke":"${nikkeId}"`) ||
+      bodyHTML.includes(`nikke=${nikkeId}`) ||
+      // Fallback: if Equipment Effects loaded at all, assume correct nikke
+      hasEquipmentEffects;
+
+    if (!hasCorrectNikke) return "not_owned";
+
+    // --- Does the member actually own this nikke? ---
+    // If "No Effects" appears in ALL equipment slots, they either don't own it
+    // or have zero gear — we handle this as valid 0% data, not an error
+    return "ok";
+  }, expectedNikkeId);
+}
+
+// ============================================================
+//  SCRAPE ONE NIKKE PAGE
+// ============================================================
 async function scrapeNikkePage(page, nikkeId, uid, nikkeNameFromCsv) {
   const url = buildUrl(nikkeId, uid);
   console.log(`   ${url}`);
@@ -143,32 +212,48 @@ async function scrapeNikkePage(page, nikkeId, uid, nikkeNameFromCsv) {
     console.log(`   ⚠ Navigation warning: ${gotoError.message}`);
   }
 
+  // Wait for Equipment Effects to render
   try {
     await page.waitForFunction(
       () => {
-        // Tìm xem trên trang đã có chữ Equipment Effects chưa
         const el = Array.from(document.querySelectorAll("div, span, p, h1, h2, h3, h4"))
                         .find(x => x.innerText?.trim() === "Equipment Effects");
         if (!el) return false;
-        
         return el.parentElement?.innerText?.includes("%") || document.body.innerText.includes("No Effects");
       },
-      { timeout: 5000 }
+      { timeout: 8000 }
     );
-  } catch (e) {
-    console.log(`   ⚠ Đang đợi render chỉ số lâu hơn bình thường...`);
+  } catch {
+    console.log(`   ⚠ Waiting longer for render...`);
+    await sleep(3000);
   }
 
   await sleep(500);
 
-  // Khối evaluate bóc tách DOM (Giữ nguyên logic ép tên CSV mà bạn đã sửa)
-  const extractedData = await page.evaluate(() => {
-    let increaseATK = "NOT FOUND";
-    let increaseElementDamageDealt = "NOT FOUND";
+  // ---- Detect page state before extracting ----
+  const pageState = await detectPageState(page, nikkeId);
 
-    const headings = Array.from(document.querySelectorAll("div, span, p, h1, h2, h3, h4"));
+  if (pageState === "private") {
+    console.log(`   🔒 Profile is private`);
+    return { status: "PRIVATE", nikkeName: nikkeNameFromCsv, syncLevel: "-", increaseATK: "-", increaseElementDamageDealt: "-" };
+  }
+
+  if (pageState === "not_loaded") {
+    console.log(`   ⏳ Page did not load properly`);
+    return { status: "NOT LOADED", nikkeName: nikkeNameFromCsv, syncLevel: "-", increaseATK: "-", increaseElementDamageDealt: "-" };
+  }
+
+  // ---- Extract stats ----
+  const extractedData = await page.evaluate(() => {
+    let increaseATK = null;
+    let increaseElementDamageDealt = null;
+    let syncLevel = null;
+    let nikkeNotOwned = false;
+
+    // Equipment Effects stats
+    const allEls = Array.from(document.querySelectorAll("div, span, p, h1, h2, h3, h4"));
     let topContainer = null;
-    for (const el of headings) {
+    for (const el of allEls) {
       if (el.innerText?.trim() === "Equipment Effects") {
         topContainer = el.parentElement;
         break;
@@ -176,43 +261,98 @@ async function scrapeNikkePage(page, nikkeId, uid, nikkeNameFromCsv) {
     }
 
     if (topContainer) {
+      const containerText = topContainer.innerText || "";
+
+      // If "No Effects" appears for everything, member owns nikke but has no gear
+      // We count how many % values appear — if none, it's likely not owned
+      const percentMatches = containerText.match(/\d+\.?\d*%/g) || [];
+      if (percentMatches.length === 0 && !containerText.includes("No Effects")) {
+        nikkeNotOwned = true;
+      }
+
       const childElements = Array.from(topContainer.querySelectorAll("div, span, td, p"));
       for (let i = 0; i < childElements.length; i++) {
         const text = childElements[i].innerText?.trim() || "";
         if (text.toLowerCase() === "increase atk") {
           const contextText = childElements[i].parentElement?.innerText || "";
-          const match = contextText.match(/(\d+\.\d+\%)/);
+          const match = contextText.match(/(\d+\.?\d*%)/);
           if (match) increaseATK = match[1];
         }
         if (text.toLowerCase() === "increase element damage dealt") {
           const contextText = childElements[i].parentElement?.innerText || "";
-          const match = contextText.match(/(\d+\.\d+\%)/);
+          const match = contextText.match(/(\d+\.?\d*%)/);
           if (match) increaseElementDamageDealt = match[1];
         }
       }
     }
-    return { increaseATK, increaseElementDamageDealt };
+
+    // Sync level — exact "LV###" standalone label only
+    const allTextEls = Array.from(document.querySelectorAll("div, span, p, td, label"));
+    for (const el of allTextEls) {
+      if (el.children.length > 0) continue;
+      const text = el.innerText?.trim() || "";
+      if (/^LV\d{1,4}$/i.test(text)) {
+        const num = parseInt(text.replace(/^LV/i, ""), 10);
+        if (num >= 10) { syncLevel = num; break; }
+      }
+    }
+    // Fallback sync level
+    if (!syncLevel) {
+      for (const el of allTextEls) {
+        const text = el.innerText?.trim() || "";
+        if (text.length > 10) continue;
+        const match = text.match(/^LV\s*(\d+)$/i);
+        if (match) {
+          const num = parseInt(match[1], 10);
+          if (num >= 10) { syncLevel = num; break; }
+        }
+      }
+    }
+
+    return { increaseATK, increaseElementDamageDealt, syncLevel, nikkeNotOwned };
   });
 
+  // ---- Determine status ----
+  // not_owned from DOM check OR no data at all with no "No Effects" either
+  if (extractedData.nikkeNotOwned || pageState === "not_owned") {
+    console.log(`   ❌ Member does not own this Nikke`);
+    return { status: "NOT OWNED", nikkeName: nikkeNameFromCsv, syncLevel: "-", increaseATK: "-", increaseElementDamageDealt: "-" };
+  }
+
+  // Owns nikke but gear not upgraded — 0% is correct, not an error
+  const atk  = extractedData.increaseATK ?? "0%";
+  const elem = extractedData.increaseElementDamageDealt ?? "0%";
+  const hasNoGearUpgrades = atk === "0%" && elem === "0%";
+
   return {
-    nikkeName: nikkeNameFromCsv,
-    increaseATK: extractedData.increaseATK === "NOT FOUND" ? "0%" : extractedData.increaseATK,
-    increaseElementDamageDealt: extractedData.increaseElementDamageDealt === "NOT FOUND" ? "0%" : extractedData.increaseElementDamageDealt
+    status:                      hasNoGearUpgrades ? "NO GEAR" : "OK",
+    nikkeName:                   nikkeNameFromCsv,
+    syncLevel:                   extractedData.syncLevel ?? 0,
+    increaseATK:                 atk,
+    increaseElementDamageDealt:  elem,
   };
 }
 
-// ---- SCRAPE MODE ----
+// ============================================================
+//  SCRAPE MODE
+// ============================================================
 async function runScrapeMode() {
   const { members, nikkes } = readInput();
   const chosenNikke = await pickNikke(nikkes);
 
-  console.log(`🚀 BlablaLink Scraper (Targeted Top-Table Mode)`);
+  console.log(`🚀 BlablaLink Scraper`);
   console.log(`   Nikke   : [ID: ${chosenNikke.nikke_id}] ${chosenNikke.nikke_name}`);
   console.log(`   Total   : ${members.length} member(s)\n`);
 
   const browser = await puppeteer.launch({
     headless: "new",
     args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    executablePath:
+      process.platform === "win32"
+        ? (fs.existsSync("C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe")
+            ? "C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe"
+            : "C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe")
+        : undefined
   });
 
   const page = await browser.newPage();
@@ -232,24 +372,41 @@ async function runScrapeMode() {
     try {
       const stats = await scrapeNikkePage(page, chosenNikke.nikke_id, member.uid, chosenNikke.nikke_name);
 
-      console.log(`   ✅ Increase Element Damage Dealt: ${stats.increaseElementDamageDealt}`);
-      console.log(`   ✅ Increase ATK                 : ${stats.increaseATK}`);
+      // Status emoji for console
+      const statusEmoji = {
+        "OK":         "✅",
+        "NO GEAR":    "⚙️ ",
+        "PRIVATE":    "🔒",
+        "NOT OWNED":  "❌",
+        "NOT LOADED": "⏳",
+      }[stats.status] ?? "❓";
+
+      console.log(`   ${statusEmoji} Status                        : ${stats.status}`);
+      if (stats.status === "OK" || stats.status === "NO GEAR") {
+        console.log(`   ✅ Sync Level                   : ${stats.syncLevel}`);
+        console.log(`   ✅ Increase ATK                 : ${stats.increaseATK}`);
+        console.log(`   ✅ Increase Element Damage Dealt: ${stats.increaseElementDamageDealt}`);
+      }
 
       results.push({
         member_name:                    member.name,
+        sync_level:                     stats.syncLevel,
         nikke_id:                       chosenNikke.nikke_id,
         nikke_name:                     stats.nikkeName,
         increase_atk:                   stats.increaseATK,
         increase_element_damage_dealt:  stats.increaseElementDamageDealt,
-        error: "",
+        status:                         stats.status,
       });
     } catch (err) {
       console.error(`   ❌ Error: ${err.message}`);
       results.push({
         member_name:                    member.name,
+        sync_level:                     "-",
+        nikke_id:                       chosenNikke.nikke_id,
         nikke_name:                     chosenNikke.nikke_name,
-        increase_element_damage_dealt:  "ERROR",
-        increase_atk:                   "ERROR",
+        increase_atk:                   "-",
+        increase_element_damage_dealt:  "-",
+        status:                         "ERROR",
       });
     }
 
@@ -262,14 +419,29 @@ async function runScrapeMode() {
     header: true,
     columns: [
       { key: "member_name",                   header: "Member Name" },
+      { key: "sync_level",                    header: "Sync Level" },
+      { key: "nikke_id",                      header: "Nikke ID" },
       { key: "nikke_name",                    header: "Nikke Name" },
-      { key: "increase_element_damage_dealt", header: "Increase Element Damage Dealt" },
       { key: "increase_atk",                  header: "Increase ATK" },
+      { key: "increase_element_damage_dealt", header: "Increase Element Damage Dealt" },
+      { key: "status",                        header: "Status" },
     ],
   });
 
-  fs.writeFileSync(OUTPUT_FILE, csv, "utf-8");
-  console.log(`\n📄 Saved to ${OUTPUT_FILE} — ${results.length} row(s)`);
+  const finalCsvPath = getOutputFilePath(chosenNikke.nikke_name);
+  fs.writeFileSync(finalCsvPath, csv, "utf-8");
+
+  // ---- Summary ----
+  const summary = results.reduce((acc, r) => {
+    acc[r.status] = (acc[r.status] || 0) + 1;
+    return acc;
+  }, {});
+  console.log(`\n📄 Saved to ${finalCsvPath} — ${results.length} row(s)`);
+  console.log(`📊 Summary:`);
+  for (const [status, count] of Object.entries(summary)) {
+    const emoji = { "OK": "✅", "NO GEAR": "⚙️ ", "PRIVATE": "🔒", "NOT OWNED": "❌", "NOT LOADED": "⏳", "ERROR": "💥" }[status] ?? "❓";
+    console.log(`   ${emoji} ${status}: ${count}`);
+  }
 }
 
 // ---- ENTRY POINT ----
