@@ -180,21 +180,27 @@ async function detectPageState(page, expectedNikkeId) {
     const hasEquipmentEffects = bodyText.includes("Equipment Effects");
     if (!hasEquipmentEffects) return "not_loaded";
 
-    // --- Check if the correct Nikke is shown ---
-    // BlablaLink embeds the nikke ID in the page URL or data attributes
-    // We check if any element references the expected nikke ID
-    const hasCorrectNikke =
-      bodyHTML.includes(`"nikke":${nikkeId}`) ||
-      bodyHTML.includes(`"nikke":"${nikkeId}"`) ||
-      bodyHTML.includes(`nikke=${nikkeId}`) ||
-      // Fallback: if Equipment Effects loaded at all, assume correct nikke
-      hasEquipmentEffects;
+    // --- Check for lock icon = member doesn't own this Nikke ---
+    // When a Nikke is not owned, the page shows a locked card with an SVG lock icon
+    // or an element with class names containing "lock", "locked", or "blind"
+    const lockSelectors = [
+      "[class*='lock']",
+      "[class*='locked']",
+      "[class*='blind']",       // blablalink uses "blind" for unreleased/unowned cards
+      "svg[class*='lock']",
+      "[aria-label*='lock']",
+    ];
+    for (const sel of lockSelectors) {
+      if (document.querySelector(sel)) return "not_owned";
+    }
 
-    if (!hasCorrectNikke) return "not_owned";
+    // Most reliable signal: owned Nikkes always have a "LV###" sync level element.
+    // If there is no LV### anywhere on the page, the member doesn't own this Nikke.
+    const allLeafEls = Array.from(document.querySelectorAll("div, span, p, td, label"))
+      .filter(el => el.children.length === 0);
+    const hasLVElement = allLeafEls.some(el => /^LV\d{1,4}$/i.test(el.innerText?.trim() || ""));
+    if (!hasLVElement) return "not_owned";
 
-    // --- Does the member actually own this nikke? ---
-    // If "No Effects" appears in ALL equipment slots, they either don't own it
-    // or have zero gear — we handle this as valid 0% data, not an error
     return "ok";
   }, expectedNikkeId);
 }
@@ -395,6 +401,7 @@ async function runScrapeMode() {
 
       // Auto-retry up to 3 attempts for technical failures (NOT LOADED / ERROR)
       // PRIVATE / NOT OWNED / NO GEAR / OK are final — no retry needed
+      // Only retry technical failures — definitive statuses never need retrying
       const RETRYABLE = ["NOT LOADED", "ERROR"];
       const MAX_ATTEMPTS = 3;
       const RETRY_DELAYS = [0, 4000, 6000]; // delay before each attempt
@@ -416,6 +423,7 @@ async function runScrapeMode() {
         }
 
         if (!RETRYABLE.includes(stats.status)) break; // got a real result, stop retrying
+        if (stats.status === "NOT OWNED" || stats.status === "PRIVATE") break; // definitive, no retry
         if (attempt < MAX_ATTEMPTS) console.log(`   ⚠ Got "${stats.status}" — will retry...`);
       }
 
@@ -450,7 +458,8 @@ async function runScrapeMode() {
   }
 
   // ---- Post-run re-scrape for NOT LOADED members ----
-  const failedMembers = members.filter((m, i) => 
+  // Only recover technical failures — NOT OWNED / PRIVATE / NO GEAR / OK are definitive
+  const failedMembers = members.filter((m, i) =>
     results[i] && (results[i].status === "NOT LOADED" || results[i].status === "ERROR")
   );
 
