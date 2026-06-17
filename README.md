@@ -80,24 +80,25 @@ Choose the nikke that you want to extract the data based on the list order, for 
 ```
 :clipboard: Available Nikkes:
    1. [ID: 16] Rapi: Red Hood
-   2. [ID: 851] Raven
-   3. [ID: 162]  Mihara: Bonding Chain
-   4. [ID: 75]  Diesel: Winter Sweets
-   5. [ID: 471]  Snow White: Heavy Arms
-   6. [ID: 234]  Dorothy: Serendipity
-   7. [ID: 502]  Elegg: Boom and Shock
-   8. [ID: 170]  Privaty
-   9. [ID: 262]  Liberalio
-   10. [ID: 225]  Scarlet: Black Shadow
-   11. [ID: 223]  Nayuta
-   12. [ID: 513]  Little Mermaid
-   13. [ID: 835]  Asuka: Wille
-   14. [ID: 511]  Cinderella
-   15. [ID: 15]  Anis: Sparkling Summer
-   16. [ID: 183]  Maiden: Ice Rose
-   17. [ID: 281]  Moran
-   18. [ID: 17]  Anis: Star
-   19. [ID: 18]  Neon: Vision Eye
+   2. [ID: 470] Red Hood
+   3. [ID: 851] Raven
+   4. [ID: 162]  Mihara: Bonding Chain
+   5. [ID: 75]  Diesel: Winter Sweets
+   6. [ID: 471]  Snow White: Heavy Arms
+   7. [ID: 234]  Dorothy: Serendipity
+   8. [ID: 502]  Elegg: Boom and Shock
+   9. [ID: 170]  Privaty
+   10. [ID: 262]  Liberalio
+   11. [ID: 225]  Scarlet: Black Shadow
+   12. [ID: 223]  Nayuta
+   13. [ID: 513]  Little Mermaid
+   14. [ID: 835]  Asuka: Wille
+   15. [ID: 511]  Cinderella
+   16. [ID: 15]  Anis: Sparkling Summer
+   17. [ID: 183]  Maiden: Ice Rose
+   18. [ID: 281]  Moran
+   19. [ID: 17]  Anis: Star
+   20. [ID: 18]  Neon: Vision Eye
 ```
 
 Results are saved to `output.csv`.
