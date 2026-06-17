@@ -194,13 +194,63 @@ async function detectPageState(page, expectedNikkeId) {
       if (document.querySelector(sel)) return "not_owned";
     }
 
-    // Most reliable signal: owned Nikkes always have a "LV###" sync level element.
-    // If there is no LV### anywhere on the page, the member doesn't own this Nikke.
+    // ---- Layered ownership check ----
+
+    // Step 1: Check if Equipment Effects table has any % values
+    const equipEffectsEl = Array.from(document.querySelectorAll("div, span, p, h1, h2, h3, h4"))
+      .find(el => el.innerText?.trim() === "Equipment Effects");
+    const equipText = equipEffectsEl?.parentElement?.innerText || "";
+    const hasEquipStats = /\d+\.?\d*%/.test(equipText) || equipText.includes("No Effects");
+
+    // Table has data — definitely owned, no need to check further
+    if (hasEquipStats) return "ok";
+
+    // Step 2: Equipment table is empty — check Attacker level
+    // Attacker level shows as a number inside a box labeled "Attacker" / "LEVEL"
+    // If attacker level is 0, move to next check
     const allLeafEls = Array.from(document.querySelectorAll("div, span, p, td, label"))
       .filter(el => el.children.length === 0);
-    const hasLVElement = allLeafEls.some(el => /^LV\d{1,4}$/i.test(el.innerText?.trim() || ""));
-    if (!hasLVElement) return "not_owned";
 
+    // Find "LEVEL" labels and grab the number sibling near "Attacker"
+    let attackerLevel = null;
+    for (let i = 0; i < allLeafEls.length; i++) {
+      const text = allLeafEls[i].innerText?.trim() || "";
+      if (text.toUpperCase() === "ATTACKER") {
+        // Look at nearby siblings for a LEVEL number
+        for (let j = i + 1; j < Math.min(i + 5, allLeafEls.length); j++) {
+          const num = parseInt(allLeafEls[j].innerText?.trim() || "", 10);
+          if (!isNaN(num)) { attackerLevel = num; break; }
+        }
+        break;
+      }
+    }
+
+    // Attacker level > 0 — member owns the Nikke but gear has no upgrades
+    if (attackerLevel !== null && attackerLevel > 0) return "no_gear";
+
+    // Step 3: Attacker level is 0 or not found — check POWER value
+    // Unowned Nikkes show a fixed generic power (6754 or 356 based on rarity)
+    // Owned Nikkes show the member's actual power which is always much higher
+    const NOT_OWNED_POWER_VALUES = [6754, 356];
+    let powerValue = null;
+    const powerLabelEl = allLeafEls.find(el => el.innerText?.trim().toUpperCase() === "POWER");
+    if (powerLabelEl) {
+      // Power value is usually a sibling or nearby element
+      const parent = powerLabelEl.parentElement;
+      if (parent) {
+        const siblings = Array.from(parent.querySelectorAll("div, span, p"))
+          .filter(el => el.children.length === 0);
+        for (const sib of siblings) {
+          const num = parseInt((sib.innerText?.trim() || "").replace(/,/g, ""), 10);
+          if (!isNaN(num) && num > 0) { powerValue = num; break; }
+        }
+      }
+    }
+
+    if (powerValue !== null && NOT_OWNED_POWER_VALUES.includes(powerValue)) return "not_owned";
+
+    // Fallback: if we got here with no equipment stats and no attacker level,
+    // but power doesn't match known unowned values — treat as owned (benefit of the doubt)
     return "ok";
   }, expectedNikkeId);
 }
@@ -248,6 +298,11 @@ async function scrapeNikkePage(page, nikkeId, uid, nikkeNameFromCsv) {
   if (pageState === "not_loaded") {
     console.log(`   ⏳ Page did not load properly`);
     return { status: "NOT LOADED", nikkeName: nikkeNameFromCsv, syncLevel: "-", increaseATK: "-", increaseElementDamageDealt: "-" };
+  }
+
+  if (pageState === "no_gear") {
+    console.log(`   ⚙️  Owns Nikke but no gear upgrades`);
+    return { status: "NO GEAR", nikkeName: nikkeNameFromCsv, syncLevel: "-", increaseATK: "0%", increaseElementDamageDealt: "0%" };
   }
 
   // ---- Extract stats ----
@@ -401,6 +456,7 @@ async function runScrapeMode() {
 
       // Auto-retry up to 3 attempts for technical failures (NOT LOADED / ERROR)
       // PRIVATE / NOT OWNED / NO GEAR / OK are final — no retry needed
+      // Only retry technical failures — definitive statuses never need retrying
       const RETRYABLE = ["NOT LOADED", "ERROR"];
       const MAX_ATTEMPTS = 3;
       const RETRY_DELAYS = [0, 4000, 6000]; // delay before each attempt
@@ -422,6 +478,7 @@ async function runScrapeMode() {
         }
 
         if (!RETRYABLE.includes(stats.status)) break; // got a real result, stop retrying
+        if (stats.status === "NOT OWNED" || stats.status === "PRIVATE") break; // definitive, no retry
         if (attempt < MAX_ATTEMPTS) console.log(`   ⚠ Got "${stats.status}" — will retry...`);
       }
 
@@ -456,7 +513,8 @@ async function runScrapeMode() {
   }
 
   // ---- Post-run re-scrape for NOT LOADED members ----
-  const failedMembers = members.filter((m, i) => 
+  // Only recover technical failures — NOT OWNED / PRIVATE / NO GEAR / OK are definitive
+  const failedMembers = members.filter((m, i) =>
     results[i] && (results[i].status === "NOT LOADED" || results[i].status === "ERROR")
   );
 
