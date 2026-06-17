@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nikke Stats Multi-Matrix Viewer with File Deletion</title>
+<title>Nikke Stats Multi-Matrix Viewer (Real Avatars)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -21,17 +21,13 @@ h1{font-size:20px;font-weight:500;margin-bottom:1.5rem;color:#1a1a1a}
 .file-loaded i{color:#888}
 .fname{flex:1;color:#1a1a1a;font-weight:500}
 .fsize{color:#888}
-
-.del-file-btn {background:none;border:none;cursor:pointer;color:#bb2d3b;font-size:16px;padding:0 4px;line-height:1;display:flex;align-items:center;justify-content:center;transition:color 0.15s}
-.del-file-btn:hover {color:#dc3545}
+.del-file-btn {background:none;border:none;cursor:pointer;color:#bb2d3b;font-size:16px;padding:0 4px;line-height:1;display:flex;align-items:center;justify-content:center}
 
 .controls{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-bottom:1rem;background:#fff;padding:12px 16px;border-radius:12px;border:0.5px solid #eee}
 .search-group {display:flex;align-items:center;gap:6px;font-size:13px;color:#666}
-.search-input {font-size:13px;padding:6px 10px;border-radius:8px;border:0.5px solid #ccc;background:#fff;color:#1a1a1a;width:160px}
-.search-input:focus {outline:none;border-color:#888}
+.search-input {font-size:13px;padding:6px 10px;border-radius:8px;border:0.5px solid #ccc;background:#fff;color:#1a1a1a;width:150px}
 select{font-size:13px;padding:6px 10px;border-radius:8px;border:0.5px solid #ccc;background:#fff;color:#1a1a1a}
 button{font-size:13px;padding:6px 14px;border-radius:8px;border:0.5px solid #ccc;background:transparent;color:#1a1a1a;cursor:pointer}
-button:hover{background:#f0f0f0}
 
 .legend{display:flex;gap:12px;align-items:center;margin-bottom:1rem;flex-wrap:wrap;background:#fff;padding:10px 14px;border-radius:8px;border:0.5px solid #eee}
 .leg{display:flex;align-items:center;gap:5px;font-size:12px;color:#666}
@@ -46,9 +42,34 @@ td{padding:6px 8px;border:0.5px solid #ddd;color:#1a1a1a;white-space:nowrap;text
 td.member-name{position:sticky;left:0;background:#fff;font-weight:bold;text-align:left;z-index:5}
 tr:hover td.member-name{background:#fafafa}
 
-.nikke-header-block {display:flex;flex-direction:column;align-items:center;gap:4px;min-width:70px}
-.nikke-avatar {width:40px;height:40px;border-radius:6px;object-fit:cover;border:1px solid #ccc;background:#e0e0e0}
-.nikke-title {max-width:75px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:#444}
+.nikke-header-block {display:flex;flex-direction:column;align-items:center;gap:4px;min-width:75px;padding:4px 0}
+/* CSS KHUNG CHỨA ẢNH ĐẠI DIỆN THỰC TẾ */
+.nikke-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1.5px solid #ddd;
+  background: #ebebeb;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+.nikke-title {max-width:85px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:#1a1a1a;font-weight:600}
+
+.element-badge {
+  font-size: 9px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: inline-block;
+}
+.elem-iron { background: #8B7355; color: #ffffff; }
+.elem-fire { background: #dc3545; color: #ffffff; }
+.elem-water { background: #0066cc; color: #ffffff; }
+.elem-wind { background: #1e7e34; color: #ffffff; }
+.elem-electric { background: #d6bbf2; color: #4a148c; }
+.elem-unknown { background: #6c757d; color: #ffffff; }
 
 .stat-cell{font-weight:600;font-size:11px;width:38px}
 .g{background:#d4edda;color:#1a5c2a}
@@ -58,7 +79,7 @@ tr:hover td.member-name{background:#fafafa}
 </style>
 </head>
 <body>
-<h1>Nikke Stats Viewer</h1>
+<h1>Nikke Stats Multi-Matrix Viewer</h1>
 
 <div id="upload-area" class="upload-area" onclick="document.getElementById('file-input').click()" ondragover="ev(event)" ondrop="drop(event)">
   <i class="ti ti-upload"></i>
@@ -77,25 +98,36 @@ tr:hover td.member-name{background:#fafafa}
     <i class="ti ti-sword"></i>
     <input type="text" id="search-nikke" class="search-input" placeholder="Search Nikke..." oninput="render()">
   </div>
-  <span style="font-size:13px;color:#ccc;margin:0 4px">|</span>
+  
+  <span style="font-size:13px;color:#ccc;margin:0 2px">|</span>
+  
+  <span style="font-size:13px;color:#666">Filter Element:</span>
+  <select id="element-filter" onchange="render()">
+    <option value="all">All Elements</option>
+    <option value="iron">IRON</option>
+    <option value="fire">FIRE</option>
+    <option value="water">WATER</option>
+    <option value="wind">WIND</option>
+    <option value="electric">ELECTRIC</option>
+  </select>
+
+  <span style="font-size:13px;color:#ccc;margin:0 2px">|</span>
+
   <span style="font-size:13px;color:#666">Sort Members:</span>
   <select id="sort-sel" onchange="render()">
-    <option value="name">Member Name</option>
-    <option value="sync">Sync Level</option>
+    <option value="name">Member Name (A-Z)</option>
+    <option value="sync">Sync Level (High → Low)</option>
   </select>
   <button style="margin-left:auto;font-size:12px;padding:4px 10px" onclick="clearAllFiles()">Clear All</button>
 </div>
 
 <div class="legend">
-  <span style="font-size:12px;color:#666;font-weight:500">Elem:</span>
-  <span class="leg"><span class="dot" style="background:#d4edda"></span>≥70%</span>
-  <span class="leg"><span class="dot" style="background:#f5ecd7"></span>30–70%</span>
-  <span class="leg"><span class="dot" style="background:#f8d7da"></span>&lt;30%</span>
-  <span class="sep">|</span>
-  <span style="font-size:12px;color:#666;font-weight:500">ATK:</span>
-  <span class="leg"><span class="dot" style="background:#d4edda"></span>≥30%</span>
-  <span class="leg"><span class="dot" style="background:#f5ecd7"></span>20–30%</span>
-  <span class="leg"><span class="dot" style="background:#f8d7da"></span>&lt;20%</span>
+  <span style="font-size:12px;color:#666;font-weight:500">Hierarchy Order:</span>
+  <span class="element-badge elem-iron">Iron</span> →
+  <span class="element-badge elem-fire">Fire</span> →
+  <span class="element-badge elem-water">Water</span> →
+  <span class="element-badge elem-wind">Wind</span> →
+  <span class="element-badge elem-electric">Electric</span>
 </div>
 
 <div class="tbl-wrap">
@@ -103,8 +135,17 @@ tr:hover td.member-name{background:#fafafa}
 </div>
 
 <script>
-// Chuyển đổi sang Map để phân tách dữ liệu độc lập theo từng File Key
 let fileDataMap = new Map();
+
+const NIKKE_ELEMENT_DATABASE = {
+  "rapi: red hood": "iron", "red hood": "iron", "raven": "iron",
+  "mihara: bonding chain": "fire", "diesel: winter sweets": "fire",
+  "snow white: heavy arms": "water", "dorothy: serendipity": "water", "elegg: boom and shock": "water", "privaty": "water",
+  "liberalio": "wind", "scarlet: black shadow": "wind", "nayuta": "wind", "little mermaid": "wind", "asuka: wille": "wind",
+  "cinderella": "electric", "anis: sparkling summer": "electric", "anis: star": "electric", "neon: vision eye": "electric", "maiden: ice rose": "electric", "moran": "electric"
+};
+
+const ELEMENT_ORDER = { "iron": 1, "fire": 2, "water": 3, "wind": 4, "electric": 5 };
 
 function ev(e){e.preventDefault();}
 function drop(e){e.preventDefault();handleFiles(e.dataTransfer.files);}
@@ -118,18 +159,12 @@ function handleFiles(files) {
   for(let i=0; i<files.length; i++) {
     const f = files[i];
     const fileKey = f.name + '_' + f.size;
-    
-    if(fileDataMap.has(fileKey)) {
-      pendingSubmissions--;
-      continue; // Tránh nạp trùng lập tệp tin
-    }
+    if(fileDataMap.has(fileKey)) { pendingSubmissions--; continue; }
 
     const r = new FileReader();
     r.onload = e => {
-      const parsed = parseCSV(e.target.result);
-      fileDataMap.set(fileKey, parsed);
+      fileDataMap.set(fileKey, parseCSV(e.target.result));
       addFileBadgeToUI(f, fileKey);
-      
       pendingSubmissions--;
       if(pendingSubmissions === 0) render();
     };
@@ -141,42 +176,28 @@ function addFileBadgeToUI(f, fileKey) {
   const container = document.getElementById('file-list');
   const div = document.createElement('div');
   div.className = 'file-loaded';
-  div.id = 'file-badge-' + fileKey.replace(/[^a-z0-9]/gi, '_'); // Tạo ID hợp lệ cho thẻ HTML
+  div.id = 'file-badge-' + fileKey.replace(/[^a-z0-9]/gi, '_');
   div.innerHTML = `
-    <i class="ti ti-file-text"></i>
-    <span class="fname">${f.name}</span>
-    <span class="fsize">${(f.size/1024).toFixed(1)} KB</span>
-    <button class="del-file-btn" onclick="deleteSpecificFile('${fileKey}', '${div.id}')" title="Delete this file">
-      <i class="ti ti-trash"></i>
-    </button>
+    <i class="ti ti-file-text"></i><span class="fname">${f.name}</span><span class="fsize">${(f.size/1024).toFixed(1)} KB</span>
+    <button class="del-file-btn" onclick="deleteSpecificFile('${fileKey}', '${div.id}')"><i class="ti ti-trash"></i></button>
   `;
   container.appendChild(div);
 }
 
-/* HÀM XÓA MỘT FILE CSV ĐƯỢC CHỈ ĐỊNH */
 function deleteSpecificFile(fileKey, badgeId) {
-  // 1. Xóa dữ liệu trong bộ nhớ Map
   fileDataMap.delete(fileKey);
-  
-  // 2. Gỡ bỏ giao diện badge hiển thị file đó
   const badge = document.getElementById(badgeId);
   if(badge) badge.remove();
-  
-  // Kiểm tra biên: Nếu không còn file nào trong bộ nhớ thì đưa hệ thống về trạng thái rỗng ban đầu
-  if(fileDataMap.size === 0) {
-    clearAllFiles();
-  } else {
-    // 3. Tiến hành vẽ lại bảng dữ liệu ma trận sau khi đã bóc tách dữ liệu file vừa xóa
-    render();
-  }
+  if(fileDataMap.size === 0) clearAllFiles(); else render();
 }
 
-function clearAllFiles(){
+function clearAllFiles() {
   fileDataMap.clear();
   document.getElementById('file-input').value = '';
   document.getElementById('file-list').innerHTML = '';
   document.getElementById('search-member').value = '';
   document.getElementById('search-nikke').value = '';
+  document.getElementById('element-filter').value = 'all';
   document.getElementById('controls').style.display = 'none';
   document.getElementById('out').innerHTML = '<div class="empty">Upload one or multiple CSV files to get started.</div>';
 }
@@ -205,9 +226,26 @@ function parseCSV(text){
   }).filter(r=>r.name);
 }
 
+/* ============================================================
+   HÀM ÁNH XẠ ĐƯỜNG DẪN ẢNH CHÂN DUNG THỰC TẾ (DẠNG LOCAL FOLDER)
+   ============================================================ */
 function getNikkeAvatar(nikkeName) {
   if(!nikkeName) return '';
-  return `https://ui-avatars.com/api/?name=${encodeURIComponent(nikkeName)}&background=random&size=120&rounded=false`;
+  // Chuẩn hóa chuỗi: "Rapi: Red Hood" -> "rapi-red-hood"
+  const slug = nikkeName.toLowerCase()
+                        .replace(/[^a-z0-9\s-]/g, '')
+                        .trim()
+                        .replace(/\s+/g, '-');
+  
+  // Trỏ thẳng vào thư mục images/ nằm cùng cấp với file HTML này của bạn
+  return `nikkes_images/${slug}.png`;
+}
+
+function capitalizeName(str) {
+  if (!str) return '';
+  return str.toLowerCase().replace(/(?:^|\s|-|:)\S/g, function(match) {
+    return match.toUpperCase();
+  });
 }
 
 function pct(v){
@@ -224,11 +262,10 @@ function render(){
   
   const memberKeyword = document.getElementById('search-member').value.toLowerCase().trim();
   const nikkeKeyword = document.getElementById('search-nikke').value.toLowerCase().trim();
+  const elementFilterVal = document.getElementById('element-filter').value;
 
   const memberMap = new Map();
   const nikkeSet = new Set();
-
-  // Gộp tất cả các mảng dữ liệu lẻ từ cấu trúc Map thành một mảng phẳng tổng hợp để lọc miền dữ liệu
   const combinedRows = [].concat(...fileDataMap.values());
 
   combinedRows.forEach(r => {
@@ -250,23 +287,31 @@ function render(){
   });
 
   let members = Array.from(memberMap.values());
-  if(memberKeyword) {
-    members = members.filter(m => m.name.toLowerCase().includes(memberKeyword));
-  }
+  if(memberKeyword) members = members.filter(m => m.name.toLowerCase().includes(memberKeyword));
 
   let nikkes = Array.from(nikkeSet);
-  if(nikkeKeyword) {
-    nikkes = nikkes.filter(n => n.toLowerCase().includes(nikkeKeyword));
+  if(elementFilterVal !== 'all') {
+    nikkes = nikkes.filter(n => (NIKKE_ELEMENT_DATABASE[n.toLowerCase()] || "unknown") === elementFilterVal);
   }
+  if(nikkeKeyword) nikkes = nikkes.filter(n => n.toLowerCase().includes(nikkeKeyword));
 
   if(members.length === 0 || nikkes.length === 0) {
-    document.getElementById('out').innerHTML = '<div class="empty">No matching results found for your search criteria.</div>';
+    document.getElementById('out').innerHTML = '<div class="empty">No matching results found for selected criteria.</div>';
     return;
   }
 
+  nikkes.sort((a, b) => {
+    const elemA = NIKKE_ELEMENT_DATABASE[a.toLowerCase()] || "unknown";
+    const elemB = NIKKE_ELEMENT_DATABASE[b.toLowerCase()] || "unknown";
+    const weightA = ELEMENT_ORDER[elemA] || 6;
+    const weightB = ELEMENT_ORDER[elemB] || 6;
+    if (weightA !== weightB) return weightA - weightB;
+    return a.toLowerCase().localeCompare(b.toLowerCase());
+  });
+
   members.sort((a,b)=>{
-    if(sortBy==='name') return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
-    if(sortBy==='sync') return (parseInt(b.sync)||0) - (parseInt(a.sync)||0);
+    if (sortBy === 'name') return a.name.toLowerCase() < b.name.toLowerCase() ? -1 : 1;
+    if (sortBy === 'sync') return (parseInt(b.sync) || 0) - (parseInt(a.sync) || 0);
     return 0;
   });
 
@@ -276,18 +321,23 @@ function render(){
   
   nikkes.forEach(n => {
     const avatarUrl = getNikkeAvatar(n);
+    const elem = NIKKE_ELEMENT_DATABASE[n.toLowerCase()] || "unknown";
+    const formattedName = capitalizeName(n);
+    
     html += `<th colspan="2">
       <div class="nikke-header-block">
-        <img class="nikke-avatar" src="${avatarUrl}" alt="${n}" title="${n}" onerror="this.src='https://placehold.co/40x40?text=NIKKE'">
-        <span class="nikke-title" title="${n}">${n}</span>
+        <img class="nikke-avatar" src="${avatarUrl}" alt="${n}" title="${formattedName}" 
+             onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(n)}&background=random&size=120';">
+        <span class="nikke-title" title="${formattedName}">${formattedName}</span>
+        <span class="element-badge elem-${elem}">${elem.toUpperCase()}</span>
       </div>
     </th>`;
   });
   html += `</tr><tr>`;
   
   nikkes.forEach(() => {
-    html += `<th style="font-size:10px;top:69px;">Ele</th>`;
-    html += `<th style="font-size:10px;top:69px;">ATK</th>`;
+    html += `<th style="font-size:10px;top:86px;">El</th>`;
+    html += `<th style="font-size:10px;top:86px;">At</th>`;
   });
   html += `</tr></thead><tbody>`;
 
@@ -301,13 +351,10 @@ function render(){
       if (data && data.status !== 'NOT OWNED' && data.status !== 'PRIVATE') {
         const ev = pct(data.elem), av = pct(data.atk);
         const ec = elemCls(ev), ac = atkCls(av);
-        
         const finalEc = (ev === 0 || ec === 'na') ? 'r' : ec;
         const finalAc = (av === 0 || ac === 'na') ? 'r' : ac;
-
         const dispElem = (ev === null || ev === 0) ? '0' : data.elem.replace('%','');
         const dispAtk = (av === null || av === 0) ? '0' : data.atk.replace('%','');
-
         html += `<td class="stat-cell ${finalEc}">${dispElem}</td>`;
         html += `<td class="stat-cell ${finalAc}">${dispAtk}</td>`;
       } else {
