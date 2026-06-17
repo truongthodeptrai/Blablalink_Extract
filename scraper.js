@@ -449,6 +449,86 @@ async function runScrapeMode() {
     if (i < members.length - 1) await sleep(DELAY_MS);
   }
 
+  // ---- Post-run re-scrape for NOT LOADED members ----
+  const failedMembers = members.filter((m, i) => 
+    results[i] && (results[i].status === "NOT LOADED" || results[i].status === "ERROR")
+  );
+
+  if (failedMembers.length > 0) {
+    console.log(`
+🔁 Post-run recovery: ${failedMembers.length} member(s) to retry...`);
+
+    const browser2 = await puppeteer.launch({
+      headless: "new",
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+      executablePath:
+        process.platform === "win32"
+          ? (fs.existsSync("C:\Program Files\Google\Chrome\Application\chrome.exe")
+              ? "C:\Program Files\Google\Chrome\Application\chrome.exe"
+              : "C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe")
+          : undefined
+    });
+
+    const page2 = await browser2.newPage();
+    await page2.setViewport({ width: 1200, height: 900 });
+    await page2.setUserAgent(
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+    );
+    await loadCookies(page2);
+
+    for (const member of failedMembers) {
+      // Find this member's index in results
+      const resultIdx = results.findIndex(r => r.member_name === member.name);
+      console.log(`
+🔄 Recovering [${member.name} × ${chosenNikke.nikke_name}]`);
+
+      // Give server a breather before retrying
+      await sleep(5000);
+
+      let recovered = null;
+      // Up to 3 more attempts in recovery pass
+      for (let attempt = 1; attempt <= 3; attempt++) {
+        if (attempt > 1) {
+          console.log(`   ↪ Recovery attempt ${attempt}/3...`);
+          await sleep(6000);
+        }
+        try {
+          recovered = await scrapeNikkePage(page2, chosenNikke.nikke_id, member.uid, chosenNikke.nikke_name);
+        } catch (err) {
+          recovered = { status: "ERROR", nikkeName: chosenNikke.nikke_name, syncLevel: "-", increaseATK: "-", increaseElementDamageDealt: "-" };
+        }
+        if (recovered.status !== "NOT LOADED" && recovered.status !== "ERROR") break;
+        if (attempt < 3) console.log(`   ⚠ Still "${recovered.status}" — retrying...`);
+      }
+
+      const statusEmoji = { "OK": "✅", "NO GEAR": "⚙️ ", "PRIVATE": "🔒", "NOT OWNED": "❌", "NOT LOADED": "⏳", "ERROR": "💥" }[recovered.status] ?? "❓";
+      console.log(`   ${statusEmoji} Recovery result: ${recovered.status}`);
+      if (recovered.status === "OK" || recovered.status === "NO GEAR") {
+        console.log(`   ✅ Sync Level                   : ${recovered.syncLevel}`);
+        console.log(`   ✅ Increase Element Damage Dealt: ${recovered.increaseElementDamageDealt}`);
+        console.log(`   ✅ Increase ATK                 : ${recovered.increaseATK}`);
+      }
+
+      // Replace the old failed result with the recovered one
+      if (resultIdx !== -1) {
+        results[resultIdx] = {
+          member_name:                    member.name,
+          sync_level:                     recovered.syncLevel,
+          nikke_id:                       chosenNikke.nikke_id,
+          nikke_name:                     recovered.nikkeName,
+          increase_atk:                   recovered.increaseATK,
+          increase_element_damage_dealt:  recovered.increaseElementDamageDealt,
+          status:                         recovered.status,
+        };
+      }
+    }
+
+    await browser2.close();
+  } else {
+    console.log(`
+✅ No failed members to recover.`);
+  }
+
   await browser.close();
 
   const csv = stringify(results, {
