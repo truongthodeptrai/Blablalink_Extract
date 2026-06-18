@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Nikke Stats Multi-Matrix Viewer (Real Avatars)</title>
+<title>Nikke Stats Multi-Matrix Viewer (Split Badges)</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -42,22 +42,22 @@ td{padding:6px 8px;border:0.5px solid #ddd;color:#1a1a1a;white-space:nowrap;text
 td.member-name{position:sticky;left:0;background:#fff;font-weight:bold;text-align:left;z-index:5}
 tr:hover td.member-name{background:#fafafa}
 
-.nikke-header-block {display:flex;flex-direction:column;align-items:center;gap:4px;min-width:75px;padding:4px 0}
-/* CSS KHUNG CHỨA ẢNH ĐẠI DIỆN THỰC TẾ */
-.nikke-avatar {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
-  object-fit: cover;
-  border: 1.5px solid #ddd;
-  background: #ebebeb;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-}
+.nikke-header-block {display:flex;flex-direction:column;align-items:center;gap:4px;min-width:85px;padding:4px 0}
+.nikke-avatar {width:44px;height:44px;border-radius:8px;object-fit:cover;border:1px solid #ddd;background:#ebebeb}
 .nikke-title {max-width:85px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px;color:#1a1a1a;font-weight:600}
+
+/* Vùng chứa các huy hiệu nằm ngang */
+.badge-container {
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 2px;
+}
 
 .element-badge {
   font-size: 9px;
-  padding: 2px 6px;
+  padding: 2px 5px;
   border-radius: 4px;
   font-weight: bold;
   text-transform: uppercase;
@@ -137,12 +137,37 @@ tr:hover td.member-name{background:#fafafa}
 <script>
 let fileDataMap = new Map();
 
+// TỪ ĐIỂN CẤU HÌNH MÁC ĐA HỆ (MẢNG CHỨA NHIỀU PHẦN TỬ) CHO NHÂN VẬT THEO ĐÚNG Ý BẠN
 const NIKKE_ELEMENT_DATABASE = {
-  "rapi: red hood": "iron", "red hood": "iron", "raven": "iron",
-  "mihara: bonding chain": "fire", "diesel: winter sweets": "fire",
-  "snow white: heavy arms": "water", "dorothy: serendipity": "water", "elegg: boom and shock": "water", "privaty": "water",
-  "liberalio": "wind", "scarlet: black shadow": "wind", "nayuta": "wind", "little mermaid": "wind", "asuka: wille": "wind",
-  "cinderella": "electric", "anis: sparkling summer": "electric", "anis: star": "electric", "neon: vision eye": "electric", "maiden: ice rose": "electric", "moran": "electric"
+  // --- IRON ---
+  "rapi: red hood": ["iron", "fire"], // ĐÃ CHỈNH SỬA: Nhân vật thuộc 2 hệ
+  "red hood": "iron",
+  "raven": "iron",
+
+  // --- FIRE ---
+  "mihara: bonding chain": "fire",
+  "diesel: winter sweets": "fire",
+
+  // --- WATER ---
+  "snow white: heavy arms": "water",
+  "dorothy: serendipity": "water",
+  "elegg: boom and shock": "water",
+  "privaty": "water",
+
+  // --- WIND ---
+  "liberalio": "wind",
+  "scarlet: black shadow": "wind",
+  "nayuta": "wind",
+  "little mermaid": "wind",
+  "asuka: wille": "wind",
+
+  // --- ELECTRIC ---
+  "cinderella": "electric",
+  "anis: sparkling summer": "electric",
+  "anis: star": "electric",
+  "neon: vision eye": "electric",
+  "maiden: ice rose": "electric",
+  "moran": "electric"
 };
 
 const ELEMENT_ORDER = { "iron": 1, "fire": 2, "water": 3, "wind": 4, "electric": 5 };
@@ -191,7 +216,7 @@ function deleteSpecificFile(fileKey, badgeId) {
   if(fileDataMap.size === 0) clearAllFiles(); else render();
 }
 
-function clearAllFiles() {
+function clearAllFiles(){
   fileDataMap.clear();
   document.getElementById('file-input').value = '';
   document.getElementById('file-list').innerHTML = '';
@@ -226,18 +251,12 @@ function parseCSV(text){
   }).filter(r=>r.name);
 }
 
-/* ============================================================
-   HÀM ÁNH XẠ ĐƯỜNG DẪN ẢNH CHÂN DUNG THỰC TẾ (DẠNG LOCAL FOLDER)
-   ============================================================ */
 function getNikkeAvatar(nikkeName) {
   if(!nikkeName) return '';
-  // Chuẩn hóa chuỗi: "Rapi: Red Hood" -> "rapi-red-hood"
   const slug = nikkeName.toLowerCase()
                         .replace(/[^a-z0-9\s-]/g, '')
                         .trim()
                         .replace(/\s+/g, '-');
-  
-  // Trỏ thẳng vào thư mục images/ nằm cùng cấp với file HTML này của bạn
   return `nikke_images/${slug}.png`;
 }
 
@@ -253,6 +272,7 @@ function pct(v){
   const n=parseFloat((v||'').replace('%',''));
   return isNaN(n)?null:n;
 }
+// Đưa màu về đúng dải màu xanh lá, vàng, đỏ của bạn
 function elemCls(v){return v===null?'na':v>=70?'g':v>=30?'c':'r';}
 function atkCls(v){return v===null?'na':v>=30?'g':v>=20?'c':'r';}
 
@@ -290,8 +310,13 @@ function render(){
   if(memberKeyword) members = members.filter(m => m.name.toLowerCase().includes(memberKeyword));
 
   let nikkes = Array.from(nikkeSet);
+  
+  // Logic lọc theo thanh nguyên tố: hỗ trợ kiểm tra cả chuỗi lẫn mảng đa hệ bằng .includes()
   if(elementFilterVal !== 'all') {
-    nikkes = nikkes.filter(n => (NIKKE_ELEMENT_DATABASE[n.toLowerCase()] || "unknown") === elementFilterVal);
+    nikkes = nikkes.filter(n => {
+      const res = NIKKE_ELEMENT_DATABASE[n.toLowerCase()] || "unknown";
+      return Array.isArray(res) ? res.includes(elementFilterVal) : res === elementFilterVal;
+    });
   }
   if(nikkeKeyword) nikkes = nikkes.filter(n => n.toLowerCase().includes(nikkeKeyword));
 
@@ -300,9 +325,12 @@ function render(){
     return;
   }
 
+  // Sắp xếp các cột Nikke theo trọng số hệ nguyên tố chủ đạo
   nikkes.sort((a, b) => {
-    const elemA = NIKKE_ELEMENT_DATABASE[a.toLowerCase()] || "unknown";
-    const elemB = NIKKE_ELEMENT_DATABASE[b.toLowerCase()] || "unknown";
+    const resA = NIKKE_ELEMENT_DATABASE[a.toLowerCase()] || "unknown";
+    const resB = NIKKE_ELEMENT_DATABASE[b.toLowerCase()] || "unknown";
+    const elemA = Array.isArray(resA) ? resA[0] : resA;
+    const elemB = Array.isArray(resB) ? resB[0] : resB;
     const weightA = ELEMENT_ORDER[elemA] || 6;
     const weightB = ELEMENT_ORDER[elemB] || 6;
     if (weightA !== weightB) return weightA - weightB;
@@ -321,7 +349,16 @@ function render(){
   
   nikkes.forEach(n => {
     const avatarUrl = getNikkeAvatar(n);
-    const elem = NIKKE_ELEMENT_DATABASE[n.toLowerCase()] || "unknown";
+    const res = NIKKE_ELEMENT_DATABASE[n.toLowerCase()] || "unknown";
+    
+    // Đảm bảo ép kiểu về mảng để xử lý lặp đồng bộ
+    const elementArray = Array.isArray(res) ? res : [res];
+    
+    // [XỬ LÝ TRỌNG TÂM]: Duyệt mảng sinh ra chuỗi HTML chứa các ô huy hiệu độc lập tách rời
+    const badgesHtml = elementArray.map(el => 
+      `<span class="element-badge elem-${el}">${el.toUpperCase()}</span>`
+    ).join('');
+    
     const formattedName = capitalizeName(n);
     
     html += `<th colspan="2">
@@ -329,7 +366,7 @@ function render(){
         <img class="nikke-avatar" src="${avatarUrl}" alt="${n}" title="${formattedName}" 
              onerror="this.onerror=null; this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(n)}&background=random&size=120';">
         <span class="nikke-title" title="${formattedName}">${formattedName}</span>
-        <span class="element-badge elem-${elem}">${elem.toUpperCase()}</span>
+        <div class="badge-container">${badgesHtml}</div>
       </div>
     </th>`;
   });
