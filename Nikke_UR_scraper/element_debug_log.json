@@ -6,1731 +6,700 @@
     "attempts": [
       {
         "damage": "54,346,671,149",
-        "bossElement": "unknown",
-        "weakness": "unknown",
-        "_debugImages": [
-          {
-            "index": 0,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/shiftysassets/images/icon-code-electronic.png",
-            "alt": "",
-            "cls": "mx-[6px] object-contain w-[20px] h-[20px]",
-            "top": 220,
-            "width": 63,
-            "height": 73
-          },
-          {
-            "index": 1,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 2,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 3,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 4,
-            "src": "https://sg-tools-cdn.blablalink.com/vk-88/qh-05/f8c6e8785196351c009e61dbba27645d.webp",
-            "alt": "Avatar 201611",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 5,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 6,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 7,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 8,
-            "src": "https://sg-tools-cdn.blablalink.com/dz-09/ue-63/31caa32129469999a8c011eba7fc1bac.webp",
-            "alt": "Avatar 360001",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 9,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 10,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 11,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 12,
-            "src": "https://sg-tools-cdn.blablalink.com/km-24/dw-92/9008590c7bab78126e533fc33dd91987.webp",
-            "alt": "Avatar 447011",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 13,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 14,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 15,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 16,
-            "src": "https://sg-tools-cdn.blablalink.com/tr-83/pl-54/140184abd98aeb95a03860bd312949f8.webp",
-            "alt": "Avatar 585104",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 17,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 18,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 19,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 20,
-            "src": "https://sg-tools-cdn.blablalink.com/uy-44/kb-68/c4ba87906faff8cfc78af5ba6429e5be.webp",
-            "alt": "Avatar 360101",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 21,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/shiftysassets/images/icon-code-fire.png",
-            "alt": "",
-            "cls": "mx-[6px] object-contain w-[20px] h-[20px]",
-            "top": 378,
-            "width": 63,
-            "height": 73
-          },
-          {
-            "index": 22,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 23,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 24,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 25,
-            "src": "https://sg-tools-cdn.blablalink.com/ot-38/it-59/891bcbffffc5feae8545935ca6e6a4ea.webp",
-            "alt": "Avatar 451309",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 26,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 27,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 28,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 29,
-            "src": "https://sg-tools-cdn.blablalink.com/tf-41/zb-01/4844e4d5e35257607e7dfb58f7a666a9.webp",
-            "alt": "Avatar 331506",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 30,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 31,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 32,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 33,
-            "src": "https://sg-tools-cdn.blablalink.com/ww-88/af-41/627884de8e4628efd7dbcb7a9e4ecf53.webp",
-            "alt": "Avatar 447111",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 34,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 35,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 36,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 37,
-            "src": "https://sg-tools-cdn.blablalink.com/sd-18/hh-09/8af2ca57a2237ea175a791338607c215.webp",
-            "alt": "Avatar 217011",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 38,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 39,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 40,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 41,
-            "src": "https://sg-tools-cdn.blablalink.com/wt-16/ol-39/6fe1b0c6425c0bae6413c1e15718b1ba.webp",
-            "alt": "Avatar 235411",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 42,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/shiftysassets/images/icon-code-water.png",
-            "alt": "",
-            "cls": "mx-[6px] object-contain w-[20px] h-[20px]",
-            "top": 536,
-            "width": 63,
-            "height": 73
-          },
-          {
-            "index": 43,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 44,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 45,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 46,
-            "src": "https://sg-tools-cdn.blablalink.com/so-39/tz-97/70fb299487aa9bb61a844a4b68e96d89.webp",
-            "alt": "Avatar 101811",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 47,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 48,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 49,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 50,
-            "src": "https://sg-tools-cdn.blablalink.com/tt-78/to-38/3870984ac10047733bc6b57502f3378c.webp",
-            "alt": "Avatar 301511",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 51,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 52,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 53,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 54,
-            "src": "https://sg-tools-cdn.blablalink.com/jt-92/ge-10/2020306990ac4f6696c4674b536dca49.webp",
-            "alt": "Avatar 301711",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 55,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 56,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 57,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 58,
-            "src": "https://sg-tools-cdn.blablalink.com/lv-30/gm-38/2bb069ba8678aa438f728fdb3c73ac1f.webp",
-            "alt": "Avatar 433011",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 59,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 60,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 61,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 62,
-            "src": "https://sg-tools-cdn.blablalink.com/bo-53/ny-94/9163759961bd6052bca348f719138ebe.webp",
-            "alt": "Avatar 218304",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          }
-        ],
-        "_debugSvgs": [],
-        "_debugHTML": "<div class=\"fixed bottom-0 z-50 h-full w-screen flex flex-col items-center justify-center pointer-events-auto\" data-cname=\"BaseTransition\" style=\"z-index: 100;\"><div class=\"absolute top-0 h-full w-screen bg-[var(--color-black-55)]\"></div><div class=\"absolute bottom-0 w-full shadow-[0px_1px_10px_var(--op-shadow-black-5)] max-w-[var(--max-pc-w)] max-h-[90vh] box-border bg-[color:var(--op-fill-white)] overflow-hidden rounded-t-[8px] overflow-y-auto\" initial=\"[object Object]\" enter=\"[object Object]\" style=\"transform: translateZ(0px);\"><!----><div class=\"font-bold font-[DINNextLTProBold] text-[length:16px] leading-[19px] text-[color:var(--text-1)] p-[20px] pb-[14px]\">XRIOS</div><div class=\"max-h-[70vh] px-[20px] pb-[20px] overflow-y-auto\"><div class=\"w-full bg-[#f4f4f4] px-[12px] py-[12px] flex flex-col mb-[8px] last:mb-0 h-[150px]\"><div class=\"flex\"><div class=\"flex flex-1\"><div class=\"bg-[#232323] uppercase text-center self-start text-[#FF5F0C] mr-[3px] w-[20px] h-[20px] leading-[22px]\" style=\"clip-path: polygon(0px 0px, 100% 0px, 100% 80%, 80% 100%, 0% 100%);\">VI</div><img class=\"mx-[6px] object-contain w-[20px] h-[20px]\" src=\"https://www.blablalink.com/assets/nikke/version/default/shiftysassets/images/icon-code-electronic.png\"><div class=\"font-[DINNextLTProBold] text-[color:var(--text-1)] h-[20px] leading-[20px]\">Ultra Z.E.U.S.</div></div><div class=\"flex flex-col items-end\"><div class=\"px-[4px] rounded-sm text-[color:var(--color-white)] h-[18px] text-[12px] bg-[#fc6a37]\">HARD"
+        "bossElement": "electric",
+        "weakness": "water"
       },
       {
         "damage": "31,561,108,027",
-        "bossElement": "unknown",
-        "weakness": "unknown",
-        "_debugImages": [
-          {
-            "index": 0,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/shiftysassets/images/icon-code-electronic.png",
-            "alt": "",
-            "cls": "mx-[6px] object-contain w-[20px] h-[20px]",
-            "top": 220,
-            "width": 63,
-            "height": 73
-          },
-          {
-            "index": 1,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 2,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 3,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 4,
-            "src": "https://sg-tools-cdn.blablalink.com/vk-88/qh-05/f8c6e8785196351c009e61dbba27645d.webp",
-            "alt": "Avatar 201611",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 5,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 6,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 7,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 8,
-            "src": "https://sg-tools-cdn.blablalink.com/dz-09/ue-63/31caa32129469999a8c011eba7fc1bac.webp",
-            "alt": "Avatar 360001",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 9,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 10,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 11,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 12,
-            "src": "https://sg-tools-cdn.blablalink.com/km-24/dw-92/9008590c7bab78126e533fc33dd91987.webp",
-            "alt": "Avatar 447011",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 13,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 14,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 15,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 16,
-            "src": "https://sg-tools-cdn.blablalink.com/tr-83/pl-54/140184abd98aeb95a03860bd312949f8.webp",
-            "alt": "Avatar 585104",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 17,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 18,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 19,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 20,
-            "src": "https://sg-tools-cdn.blablalink.com/uy-44/kb-68/c4ba87906faff8cfc78af5ba6429e5be.webp",
-            "alt": "Avatar 360101",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 21,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/shiftysassets/images/icon-code-fire.png",
-            "alt": "",
-            "cls": "mx-[6px] object-contain w-[20px] h-[20px]",
-            "top": 378,
-            "width": 63,
-            "height": 73
-          },
-          {
-            "index": 22,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 23,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 24,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 25,
-            "src": "https://sg-tools-cdn.blablalink.com/ot-38/it-59/891bcbffffc5feae8545935ca6e6a4ea.webp",
-            "alt": "Avatar 451309",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 26,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 27,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 28,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 29,
-            "src": "https://sg-tools-cdn.blablalink.com/tf-41/zb-01/4844e4d5e35257607e7dfb58f7a666a9.webp",
-            "alt": "Avatar 331506",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 30,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 31,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 32,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 33,
-            "src": "https://sg-tools-cdn.blablalink.com/ww-88/af-41/627884de8e4628efd7dbcb7a9e4ecf53.webp",
-            "alt": "Avatar 447111",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 34,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 35,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 36,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 37,
-            "src": "https://sg-tools-cdn.blablalink.com/sd-18/hh-09/8af2ca57a2237ea175a791338607c215.webp",
-            "alt": "Avatar 217011",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 38,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 39,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 40,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 41,
-            "src": "https://sg-tools-cdn.blablalink.com/wt-16/ol-39/6fe1b0c6425c0bae6413c1e15718b1ba.webp",
-            "alt": "Avatar 235411",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 42,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/shiftysassets/images/icon-code-water.png",
-            "alt": "",
-            "cls": "mx-[6px] object-contain w-[20px] h-[20px]",
-            "top": 536,
-            "width": 63,
-            "height": 73
-          },
-          {
-            "index": 43,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 44,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 45,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 46,
-            "src": "https://sg-tools-cdn.blablalink.com/so-39/tz-97/70fb299487aa9bb61a844a4b68e96d89.webp",
-            "alt": "Avatar 101811",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 47,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 48,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 49,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 50,
-            "src": "https://sg-tools-cdn.blablalink.com/tt-78/to-38/3870984ac10047733bc6b57502f3378c.webp",
-            "alt": "Avatar 301511",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 51,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 52,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 53,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 54,
-            "src": "https://sg-tools-cdn.blablalink.com/jt-92/ge-10/2020306990ac4f6696c4674b536dca49.webp",
-            "alt": "Avatar 301711",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 55,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 56,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 57,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 58,
-            "src": "https://sg-tools-cdn.blablalink.com/lv-30/gm-38/2bb069ba8678aa438f728fdb3c73ac1f.webp",
-            "alt": "Avatar 433011",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 59,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 60,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 61,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 62,
-            "src": "https://sg-tools-cdn.blablalink.com/bo-53/ny-94/9163759961bd6052bca348f719138ebe.webp",
-            "alt": "Avatar 218304",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          }
-        ],
-        "_debugSvgs": [],
-        "_debugHTML": "<div class=\"fixed bottom-0 z-50 h-full w-screen flex flex-col items-center justify-center pointer-events-auto\" data-cname=\"BaseTransition\" style=\"z-index: 100;\"><div class=\"absolute top-0 h-full w-screen bg-[var(--color-black-55)]\"></div><div class=\"absolute bottom-0 w-full shadow-[0px_1px_10px_var(--op-shadow-black-5)] max-w-[var(--max-pc-w)] max-h-[90vh] box-border bg-[color:var(--op-fill-white)] overflow-hidden rounded-t-[8px] overflow-y-auto\" initial=\"[object Object]\" enter=\"[object Object]\" style=\"transform: translateZ(0px);\"><!----><div class=\"font-bold font-[DINNextLTProBold] text-[length:16px] leading-[19px] text-[color:var(--text-1)] p-[20px] pb-[14px]\">XRIOS</div><div class=\"max-h-[70vh] px-[20px] pb-[20px] overflow-y-auto\"><div class=\"w-full bg-[#f4f4f4] px-[12px] py-[12px] flex flex-col mb-[8px] last:mb-0 h-[150px]\"><div class=\"flex\"><div class=\"flex flex-1\"><div class=\"bg-[#232323] uppercase text-center self-start text-[#FF5F0C] mr-[3px] w-[20px] h-[20px] leading-[22px]\" style=\"clip-path: polygon(0px 0px, 100% 0px, 100% 80%, 80% 100%, 0% 100%);\">VI</div><img class=\"mx-[6px] object-contain w-[20px] h-[20px]\" src=\"https://www.blablalink.com/assets/nikke/version/default/shiftysassets/images/icon-code-electronic.png\"><div class=\"font-[DINNextLTProBold] text-[color:var(--text-1)] h-[20px] leading-[20px]\">Ultra Z.E.U.S.</div></div><div class=\"flex flex-col items-end\"><div class=\"px-[4px] rounded-sm text-[color:var(--color-white)] h-[18px] text-[12px] bg-[#fc6a37]\">HARD"
+        "bossElement": "fire",
+        "weakness": "wind"
       },
       {
         "damage": "73,581,685,825",
-        "bossElement": "unknown",
-        "weakness": "unknown",
-        "_debugImages": [
-          {
-            "index": 0,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/shiftysassets/images/icon-code-electronic.png",
-            "alt": "",
-            "cls": "mx-[6px] object-contain w-[20px] h-[20px]",
-            "top": 220,
-            "width": 63,
-            "height": 73
-          },
-          {
-            "index": 1,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 2,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 3,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 4,
-            "src": "https://sg-tools-cdn.blablalink.com/vk-88/qh-05/f8c6e8785196351c009e61dbba27645d.webp",
-            "alt": "Avatar 201611",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 5,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 6,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 7,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 8,
-            "src": "https://sg-tools-cdn.blablalink.com/dz-09/ue-63/31caa32129469999a8c011eba7fc1bac.webp",
-            "alt": "Avatar 360001",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 9,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 10,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 11,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 12,
-            "src": "https://sg-tools-cdn.blablalink.com/km-24/dw-92/9008590c7bab78126e533fc33dd91987.webp",
-            "alt": "Avatar 447011",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 13,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 14,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 15,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 16,
-            "src": "https://sg-tools-cdn.blablalink.com/tr-83/pl-54/140184abd98aeb95a03860bd312949f8.webp",
-            "alt": "Avatar 585104",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 17,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 18,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 19,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-Bv0b_V3C.png",
-            "alt": "",
-            "cls": "",
-            "top": 264,
-            "width": 42,
-            "height": 42
-          },
-          {
-            "index": 20,
-            "src": "https://sg-tools-cdn.blablalink.com/uy-44/kb-68/c4ba87906faff8cfc78af5ba6429e5be.webp",
-            "alt": "Avatar 360101",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 263,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 21,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/shiftysassets/images/icon-code-fire.png",
-            "alt": "",
-            "cls": "mx-[6px] object-contain w-[20px] h-[20px]",
-            "top": 378,
-            "width": 63,
-            "height": 73
-          },
-          {
-            "index": 22,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 23,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 24,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 25,
-            "src": "https://sg-tools-cdn.blablalink.com/ot-38/it-59/891bcbffffc5feae8545935ca6e6a4ea.webp",
-            "alt": "Avatar 451309",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 26,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 27,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 28,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 29,
-            "src": "https://sg-tools-cdn.blablalink.com/tf-41/zb-01/4844e4d5e35257607e7dfb58f7a666a9.webp",
-            "alt": "Avatar 331506",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 30,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 31,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 32,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 33,
-            "src": "https://sg-tools-cdn.blablalink.com/ww-88/af-41/627884de8e4628efd7dbcb7a9e4ecf53.webp",
-            "alt": "Avatar 447111",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 34,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 35,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 36,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 37,
-            "src": "https://sg-tools-cdn.blablalink.com/sd-18/hh-09/8af2ca57a2237ea175a791338607c215.webp",
-            "alt": "Avatar 217011",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 38,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 39,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 40,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 422,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 41,
-            "src": "https://sg-tools-cdn.blablalink.com/wt-16/ol-39/6fe1b0c6425c0bae6413c1e15718b1ba.webp",
-            "alt": "Avatar 235411",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 421,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 42,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/shiftysassets/images/icon-code-water.png",
-            "alt": "",
-            "cls": "mx-[6px] object-contain w-[20px] h-[20px]",
-            "top": 536,
-            "width": 63,
-            "height": 73
-          },
-          {
-            "index": 43,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 44,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 45,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 46,
-            "src": "https://sg-tools-cdn.blablalink.com/so-39/tz-97/70fb299487aa9bb61a844a4b68e96d89.webp",
-            "alt": "Avatar 101811",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 47,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 48,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 49,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 50,
-            "src": "https://sg-tools-cdn.blablalink.com/tt-78/to-38/3870984ac10047733bc6b57502f3378c.webp",
-            "alt": "Avatar 301511",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 51,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 52,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 53,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 54,
-            "src": "https://sg-tools-cdn.blablalink.com/jt-92/ge-10/2020306990ac4f6696c4674b536dca49.webp",
-            "alt": "Avatar 301711",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 55,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 56,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 57,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 58,
-            "src": "https://sg-tools-cdn.blablalink.com/lv-30/gm-38/2bb069ba8678aa438f728fdb3c73ac1f.webp",
-            "alt": "Avatar 433011",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          },
-          {
-            "index": 59,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 60,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 61,
-            "src": "https://www.blablalink.com/assets/nikke/version/default/assets/icon-nikke-star-gold-BnTupWrm.png",
-            "alt": "",
-            "cls": "",
-            "top": 580,
-            "width": 42,
-            "height": 43
-          },
-          {
-            "index": 62,
-            "src": "https://sg-tools-cdn.blablalink.com/bo-53/ny-94/9163759961bd6052bca348f719138ebe.webp",
-            "alt": "Avatar 218304",
-            "cls": "w-full h-full object-cover rounded-[2px]",
-            "top": 579,
-            "width": 128,
-            "height": 128
-          }
-        ],
-        "_debugSvgs": [],
-        "_debugHTML": "<div class=\"fixed bottom-0 z-50 h-full w-screen flex flex-col items-center justify-center pointer-events-auto\" data-cname=\"BaseTransition\" style=\"z-index: 100;\"><div class=\"absolute top-0 h-full w-screen bg-[var(--color-black-55)]\"></div><div class=\"absolute bottom-0 w-full shadow-[0px_1px_10px_var(--op-shadow-black-5)] max-w-[var(--max-pc-w)] max-h-[90vh] box-border bg-[color:var(--op-fill-white)] overflow-hidden rounded-t-[8px] overflow-y-auto\" initial=\"[object Object]\" enter=\"[object Object]\" style=\"transform: translateZ(0px);\"><!----><div class=\"font-bold font-[DINNextLTProBold] text-[length:16px] leading-[19px] text-[color:var(--text-1)] p-[20px] pb-[14px]\">XRIOS</div><div class=\"max-h-[70vh] px-[20px] pb-[20px] overflow-y-auto\"><div class=\"w-full bg-[#f4f4f4] px-[12px] py-[12px] flex flex-col mb-[8px] last:mb-0 h-[150px]\"><div class=\"flex\"><div class=\"flex flex-1\"><div class=\"bg-[#232323] uppercase text-center self-start text-[#FF5F0C] mr-[3px] w-[20px] h-[20px] leading-[22px]\" style=\"clip-path: polygon(0px 0px, 100% 0px, 100% 80%, 80% 100%, 0% 100%);\">VI</div><img class=\"mx-[6px] object-contain w-[20px] h-[20px]\" src=\"https://www.blablalink.com/assets/nikke/version/default/shiftysassets/images/icon-code-electronic.png\"><div class=\"font-[DINNextLTProBold] text-[color:var(--text-1)] h-[20px] leading-[20px]\">Ultra Z.E.U.S.</div></div><div class=\"flex flex-col items-end\"><div class=\"px-[4px] rounded-sm text-[color:var(--color-white)] h-[18px] text-[12px] bg-[#fc6a37]\">HARD"
+        "bossElement": "water",
+        "weakness": "fire"
+      }
+    ]
+  },
+  {
+    "name": "HEMS",
+    "participationCount": "3",
+    "totalDamage": "140.97B",
+    "attempts": [
+      {
+        "damage": "42,737,868,410",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "51,415,376,306",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "46,816,991,372",
+        "bossElement": "electric",
+        "weakness": "water"
+      }
+    ]
+  },
+  {
+    "name": "ETHAN",
+    "participationCount": "3",
+    "totalDamage": "137.035B",
+    "attempts": [
+      {
+        "damage": "40,931,892,754",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "37,397,099,317",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "58,705,984,393",
+        "bossElement": "wind",
+        "weakness": "iron"
+      }
+    ]
+  },
+  {
+    "name": "XIEL",
+    "participationCount": "3",
+    "totalDamage": "129.26B",
+    "attempts": [
+      {
+        "damage": "39,759,768,130",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "52,232,791,998",
+        "bossElement": "wind",
+        "weakness": "iron"
+      },
+      {
+        "damage": "37,267,529,044",
+        "bossElement": "fire",
+        "weakness": "wind"
+      }
+    ]
+  },
+  {
+    "name": "ERIC",
+    "participationCount": "3",
+    "totalDamage": "120.613B",
+    "attempts": [
+      {
+        "damage": "35,855,525,066",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "38,845,642,409",
+        "bossElement": "wind",
+        "weakness": "iron"
+      },
+      {
+        "damage": "45,912,151,513",
+        "bossElement": "fire",
+        "weakness": "wind"
+      }
+    ]
+  },
+  {
+    "name": "SHIKA",
+    "participationCount": "3",
+    "totalDamage": "113.008B",
+    "attempts": [
+      {
+        "damage": "23,375,975,113",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "36,042,067,448",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "53,589,510,224",
+        "bossElement": "water",
+        "weakness": "fire"
+      }
+    ]
+  },
+  {
+    "name": "LONE",
+    "participationCount": "3",
+    "totalDamage": "112.996B",
+    "attempts": [
+      {
+        "damage": "30,311,575,923",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "29,841,163,118",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "52,843,110,277",
+        "bossElement": "water",
+        "weakness": "fire"
+      }
+    ]
+  },
+  {
+    "name": "KINJIROU",
+    "participationCount": "3",
+    "totalDamage": "112.362B",
+    "attempts": [
+      {
+        "damage": "30,136,908,374",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "42,901,687,320",
+        "bossElement": "water",
+        "weakness": "fire"
+      },
+      {
+        "damage": "39,323,566,139",
+        "bossElement": "electric",
+        "weakness": "water"
+      }
+    ]
+  },
+  {
+    "name": "AVALON",
+    "participationCount": "3",
+    "totalDamage": "111.663B",
+    "attempts": [
+      {
+        "damage": "28,099,750,626",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "36,549,952,531",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "47,013,168,923",
+        "bossElement": "water",
+        "weakness": "fire"
+      }
+    ]
+  },
+  {
+    "name": "KENNI",
+    "participationCount": "3",
+    "totalDamage": "108.654B",
+    "attempts": [
+      {
+        "damage": "44,787,687,263",
+        "bossElement": "water",
+        "weakness": "fire"
+      },
+      {
+        "damage": "28,238,927,395",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "35,627,465,400",
+        "bossElement": "electric",
+        "weakness": "water"
+      }
+    ]
+  },
+  {
+    "name": "GLORDVJ",
+    "participationCount": "3",
+    "totalDamage": "103.906B",
+    "attempts": [
+      {
+        "damage": "32,748,504,594",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "26,416,986,364",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "44,740,589,562",
+        "bossElement": "water",
+        "weakness": "fire"
+      }
+    ]
+  },
+  {
+    "name": "TERRA854",
+    "participationCount": "3",
+    "totalDamage": "102.814B",
+    "attempts": [
+      {
+        "damage": "47,952,399,675",
+        "bossElement": "water",
+        "weakness": "fire"
+      },
+      {
+        "damage": "22,357,674,260",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "32,503,571,659",
+        "bossElement": "electric",
+        "weakness": "water"
+      }
+    ]
+  },
+  {
+    "name": "AGUMBI",
+    "participationCount": "3",
+    "totalDamage": "102.432B",
+    "attempts": [
+      {
+        "damage": "30,035,471,568",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "28,112,073,760",
+        "bossElement": "wind",
+        "weakness": "iron"
+      },
+      {
+        "damage": "44,284,110,094",
+        "bossElement": "water",
+        "weakness": "fire"
+      }
+    ]
+  },
+  {
+    "name": "E19鉻合金",
+    "participationCount": "3",
+    "totalDamage": "100.02B",
+    "attempts": [
+      {
+        "damage": "28,591,221,084",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "40,931,061,375",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "30,498,043,051",
+        "bossElement": "wind",
+        "weakness": "iron"
+      }
+    ]
+  },
+  {
+    "name": "KAMAZUNE",
+    "participationCount": "3",
+    "totalDamage": "97.312B",
+    "attempts": [
+      {
+        "damage": "34,617,427,406",
+        "bossElement": "wind",
+        "weakness": "iron"
+      },
+      {
+        "damage": "31,269,283,753",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "31,425,229,092",
+        "bossElement": "fire",
+        "weakness": "wind"
+      }
+    ]
+  },
+  {
+    "name": "ONIICHAN",
+    "participationCount": "3",
+    "totalDamage": "95.314B",
+    "attempts": [
+      {
+        "damage": "22,524,944,462",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "41,451,176,090",
+        "bossElement": "water",
+        "weakness": "fire"
+      },
+      {
+        "damage": "31,337,821,625",
+        "bossElement": "electric",
+        "weakness": "water"
+      }
+    ]
+  },
+  {
+    "name": "PEACH",
+    "participationCount": "3",
+    "totalDamage": "94.756B",
+    "attempts": [
+      {
+        "damage": "33,594,799,175",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "25,353,639,215",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "35,807,257,483",
+        "bossElement": "electric",
+        "weakness": "water"
+      }
+    ]
+  },
+  {
+    "name": "CCDC08",
+    "participationCount": "3",
+    "totalDamage": "94.141B",
+    "attempts": [
+      {
+        "damage": "30,297,737,841",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "29,155,332,728",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "34,688,288,768",
+        "bossElement": "wind",
+        "weakness": "iron"
+      }
+    ]
+  },
+  {
+    "name": "VIEW",
+    "participationCount": "3",
+    "totalDamage": "92.146B",
+    "attempts": [
+      {
+        "damage": "29,935,327,980",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "37,126,297,263",
+        "bossElement": "wind",
+        "weakness": "iron"
+      },
+      {
+        "damage": "25,084,863,465",
+        "bossElement": "iron",
+        "weakness": "electric"
+      }
+    ]
+  },
+  {
+    "name": "NIKKE69",
+    "participationCount": "3",
+    "totalDamage": "90.498B",
+    "attempts": [
+      {
+        "damage": "37,357,302,823",
+        "bossElement": "wind",
+        "weakness": "iron"
+      },
+      {
+        "damage": "26,519,648,037",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "26,621,458,210",
+        "bossElement": "iron",
+        "weakness": "electric"
+      }
+    ]
+  },
+  {
+    "name": "KOMURA",
+    "participationCount": "3",
+    "totalDamage": "90.128B",
+    "attempts": [
+      {
+        "damage": "27,159,393,879",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "24,228,012,866",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "38,740,595,373",
+        "bossElement": "electric",
+        "weakness": "water"
+      }
+    ]
+  },
+  {
+    "name": "HIKO",
+    "participationCount": "3",
+    "totalDamage": "90.118B",
+    "attempts": [
+      {
+        "damage": "32,656,079,762",
+        "bossElement": "wind",
+        "weakness": "iron"
+      },
+      {
+        "damage": "27,805,529,967",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "29,656,761,455",
+        "bossElement": "electric",
+        "weakness": "water"
+      }
+    ]
+  },
+  {
+    "name": "ZEF",
+    "participationCount": "3",
+    "totalDamage": "89.209B",
+    "attempts": [
+      {
+        "damage": "19,426,792,629",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "42,419,171,965",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "27,362,998,679",
+        "bossElement": "fire",
+        "weakness": "wind"
+      }
+    ]
+  },
+  {
+    "name": "QTB",
+    "participationCount": "3",
+    "totalDamage": "88.719B",
+    "attempts": [
+      {
+        "damage": "34,751,556,885",
+        "bossElement": "water",
+        "weakness": "fire"
+      },
+      {
+        "damage": "27,337,021,025",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "26,630,598,896",
+        "bossElement": "iron",
+        "weakness": "electric"
+      }
+    ]
+  },
+  {
+    "name": "FLAME",
+    "participationCount": "3",
+    "totalDamage": "86.959B",
+    "attempts": [
+      {
+        "damage": "42,755,273,630",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "21,848,525,968",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "22,355,317,494",
+        "bossElement": "fire",
+        "weakness": "wind"
+      }
+    ]
+  },
+  {
+    "name": "AN",
+    "participationCount": "3",
+    "totalDamage": "85.557B",
+    "attempts": [
+      {
+        "damage": "24,725,339,430",
+        "bossElement": "electric",
+        "weakness": "water"
+      },
+      {
+        "damage": "26,699,094,263",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "34,132,232,812",
+        "bossElement": "fire",
+        "weakness": "wind"
+      }
+    ]
+  },
+  {
+    "name": "SHIKIKAN",
+    "participationCount": "3",
+    "totalDamage": "85.521B",
+    "attempts": [
+      {
+        "damage": "35,371,925,461",
+        "bossElement": "wind",
+        "weakness": "iron"
+      },
+      {
+        "damage": "24,411,232,485",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "25,738,257,424",
+        "bossElement": "iron",
+        "weakness": "electric"
+      }
+    ]
+  },
+  {
+    "name": "REXV",
+    "participationCount": "3",
+    "totalDamage": "83.151B",
+    "attempts": [
+      {
+        "damage": "25,678,443,743",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "34,159,512,847",
+        "bossElement": "wind",
+        "weakness": "iron"
+      },
+      {
+        "damage": "23,313,516,028",
+        "bossElement": "iron",
+        "weakness": "electric"
+      }
+    ]
+  },
+  {
+    "name": "GOHST",
+    "participationCount": "3",
+    "totalDamage": "82.998B",
+    "attempts": [
+      {
+        "damage": "20,287,843,392",
+        "bossElement": "wind",
+        "weakness": "iron"
+      },
+      {
+        "damage": "32,614,481,361",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "30,095,902,389",
+        "bossElement": "fire",
+        "weakness": "wind"
+      }
+    ]
+  },
+  {
+    "name": "KILLJOY",
+    "participationCount": "3",
+    "totalDamage": "82.16B",
+    "attempts": [
+      {
+        "damage": "24,183,047,538",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "34,669,947,381",
+        "bossElement": "wind",
+        "weakness": "iron"
+      },
+      {
+        "damage": "23,307,389,098",
+        "bossElement": "fire",
+        "weakness": "wind"
+      }
+    ]
+  },
+  {
+    "name": "VERTIGO",
+    "participationCount": "3",
+    "totalDamage": "79.304B",
+    "attempts": [
+      {
+        "damage": "25,720,946,483",
+        "bossElement": "fire",
+        "weakness": "wind"
+      },
+      {
+        "damage": "20,826,687,573",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "32,756,833,036",
+        "bossElement": "wind",
+        "weakness": "iron"
+      }
+    ]
+  },
+  {
+    "name": "DRACUSJ",
+    "participationCount": "3",
+    "totalDamage": "55.281B",
+    "attempts": [
+      {
+        "damage": "14,189,311,612",
+        "bossElement": "water",
+        "weakness": "fire"
+      },
+      {
+        "damage": "11,046,513,681",
+        "bossElement": "iron",
+        "weakness": "electric"
+      },
+      {
+        "damage": "30,045,230,347",
+        "bossElement": "fire",
+        "weakness": "wind"
       }
     ]
   }

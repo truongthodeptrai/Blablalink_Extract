@@ -27,7 +27,8 @@
         tr:hover td.name { background: #f9f9f9; }
         
         td.c { text-align: center; }
-        td.dmg { text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; }
+        /* [UPDATED ALIGNMENT]: Aligned damage typography to text center for perfect center alignment layout positioning */
+        td.dmg { text-align: center; font-weight: 500; font-variant-numeric: tabular-nums; }
         td.dash { text-align: center; color: #ccc; font-weight: 400; }
         
         tr:hover td { filter: brightness(0.97); }
@@ -56,8 +57,8 @@
             <thead>
                 <tr>
                     <th style="min-width: 140px; border-right: 1.5px solid #ddd;">Member Name</th>
-                    <th>Participation Count</th>
-                    <th>Total DMG</th>
+                    <th>Count</th>
+                    <th style="border-right: 1.5px solid #ddd;">Total DMG</th>
                     <th>Attempt 1 Damage</th>
                     <th>Attempt 2 Damage</th>
                     <th>Attempt 3 Damage</th>
@@ -117,6 +118,7 @@
             });
         }
 
+        // Processing block logic layout parser matrix engine
         function processData(csvText) {
             const dataMatrix = parseCSV(csvText);
             if (dataMatrix.length < 2) return;
@@ -146,10 +148,9 @@
                     } else {
                         const cleanElementKey = rawWeakness.toLowerCase();
                         const colorCode = ELEMENT_COLORS[cleanElementKey] || "#ccc";
-                        // Custom alpha hex code conversion generating a transparent background (15% padding)
-                        const transparentBg = colorCode + "26"; 
+                        const transparentBg = colorCode + "26"; // Alpha hex transparency configuration overlay
 
-                        // Kết xuất duy nhất ô Damage và nhuộm màu nền ẩn theo cột nguyên tố điểm yếu tương ứng
+                        // Appending centered layout node variables cleanly matching weakness rules
                         rowHtml += `<td class="dmg" style="background:${transparentBg}; color:${colorCode}; font-weight:600; border-right: 0.5px solid #eee;">${rawDamage}</td>`;
                     }
                 }
