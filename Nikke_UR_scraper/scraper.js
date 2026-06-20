@@ -12,12 +12,13 @@ const LOGIN_URL    = "https://www.blablalink.com";
 
 const isLoginMode = process.argv.includes("--login");
 
+// Step 2 Rule Matrix: Circular Weakness Rule System Lookup
 const WEAKNESS_MAP = {
-  fire:     "wind",
-  wind:     "iron",
-  iron:     "electric",
-  electric: "water",
-  water:    "fire",
+  fire:     "wind",     // Fire boss is weak against Wind squads
+  wind:     "iron",     // Wind boss is weak against Iron squads
+  iron:     "electric", // Iron boss is weak against Electric squads
+  electric: "water",    // Electric boss is weak against Water squads
+  water:    "fire",     // Water boss is weak against Fire squads
 };
 
 const ELEMENT_COLORS = {
@@ -26,14 +27,6 @@ const ELEMENT_COLORS = {
   iron:     "#F0B27A",
   electric: "#8C79C5",
   water:    "#74B4E7",
-};
-
-const ELEMENT_KEYWORDS = {
-  fire:     ["fire", "flame", "blaze"],
-  wind:     ["wind", "air", "breeze"],
-  iron:     ["iron", "steel", "metal"],
-  electric: ["electric", "elec", "thunder", "lightning", "zeus"],
-  water:    ["water", "aqua", "ice"],
 };
 // ============================================================
 
@@ -47,11 +40,6 @@ function readConfig() {
     process.exit(1);
   }
   return JSON.parse(fs.readFileSync(CONFIG_FILE, "utf-8"));
-}
-
-// Safe dispatch click — works on ANY element including SVG, img, div
-function safeDispatchClick(el) {
-  el.dispatchEvent(new MouseEvent("click", { view: window, bubbles: true, cancelable: true }));
 }
 
 async function saveCookies(page) {
@@ -96,8 +84,8 @@ async function runLoginMode() {
     headless: false, defaultViewport: null,
     args: ["--start-maximized", "--no-sandbox", "--disable-setuid-sandbox"]
   });
-  const pages = await browser.pages();
-  const page = pages[0];
+  const pages = await browser.browserContexts();
+  const page = (await browser.pages())[0];
   await page.goto(LOGIN_URL, { waitUntil: "networkidle2" });
 
   let connected = true;
@@ -115,13 +103,8 @@ async function runLoginMode() {
   console.log(`\n✅ Session captured! Now run: node scraper.js\n`);
 }
 
-function detectElement(src, alt, cls) {
-  const hay = `${src} ${alt} ${cls}`.toLowerCase();
-  for (const [elem, kws] of Object.entries(ELEMENT_KEYWORDS)) {
-    if (kws.some(kw => hay.includes(kw))) return elem;
-  }
-  return null;
-}
+
+
 
 function interceptAPI(page) {
   const log = {};
@@ -173,10 +156,6 @@ async function scrapeUnionRaid(page, config) {
   }
 
   // ---- Step 3: Click Day 2 (Hard) tab ----
-  // The tab contains BOTH "HARD" badge text AND "Day 2" text inside it.
-  // We find the SMALLEST element that contains "Day 2" — that's the tab itself,
-  // not a parent container. We also skip elements that contain "Day 1" to avoid
-  // accidentally matching a parent that wraps both tabs.
   console.log(`📋 Step 3: Switching to Day 2 (Hard) tab...`);
   try {
     await tp.waitForFunction(
@@ -188,20 +167,11 @@ async function scrapeUnionRaid(page, config) {
 
   const day2Clicked = await tp.evaluate(() => {
     const all = Array.from(document.querySelectorAll("*"));
-
-    // Find all visible elements whose text includes "Day 2"
-    const candidates = all.filter(el =>
-      el.innerText?.includes("Day 2") &&
-      el.offsetParent !== null
-    );
-
+    const candidates = all.filter(el => el.innerText?.includes("Day 2") && el.offsetParent !== null);
     if (!candidates.length) return false;
 
-    // Pick the one with the SHORTEST innerText — that's the actual tab button,
-    // not a container wrapping multiple tabs
     candidates.sort((a, b) => a.innerText.length - b.innerText.length);
     const tab = candidates[0];
-
     tab.dispatchEvent(new MouseEvent("click", { view: window, bubbles: true, cancelable: true }));
     return tab.innerText?.trim();
   });
@@ -211,221 +181,206 @@ async function scrapeUnionRaid(page, config) {
     process.exit(1);
   }
   console.log(`   ✅ Clicked tab: "${day2Clicked.replace(/\n/g, ' ')}"`);
-  await sleep(3000);
+  await sleep(4000);
 
-  // ---- Step 4: Scroll and collect all members ----
-  console.log(`📋 Step 4: Collecting member list via scroll...`);
-
-  // Debug: identify all scrollable containers on the page
-  const containerInfo = await tp.evaluate(() => {
-    const all = Array.from(document.querySelectorAll("*"));
-    return all
-      .filter(el => el.scrollHeight > el.clientHeight + 10)
-      .map(el => ({
-        tag: el.tagName,
-        cls: el.className?.toString().slice(0, 60),
-        scrollH: el.scrollHeight,
-        clientH: el.clientHeight,
-        overflow: getComputedStyle(el).overflowY,
-      }))
-      .filter(el => el.overflow === "auto" || el.overflow === "scroll")
-      .slice(0, 5);
-  });
-  console.log(`   🔎 Scrollable containers found:`);
-  containerInfo.forEach((c, i) => console.log(`      [${i}] <${c.tag}> class="${c.cls}" scrollH=${c.scrollH} clientH=${c.clientH} overflow=${c.overflow}`));
+  // ---- Step 4: Robust Index-based Matrix Scraping ----
+  console.log(`📋 Step 4: Collecting member list via multi-container scroll tactics...`);
 
   const members = await tp.evaluate(async () => {
     const map = new Map();
     let stale = 0;
-    let last = 0;
+    let lastSize = 0;
 
-    // Find the scrollable container that wraps the member table
-    // Try multiple strategies in order of specificity
-    const findContainer = () => {
+    const getScrollTargets = () => {
+      const targets = [window];
       const table = document.querySelector("table");
-      if (!table) return null;
-
-      // Walk up from the table and find the first scrollable ancestor
-      let el = table.parentElement;
-      while (el && el !== document.body) {
-        const style = getComputedStyle(el);
-        if ((style.overflowY === "auto" || style.overflowY === "scroll") && el.scrollHeight > el.clientHeight + 10) {
-          return el;
-        }
-        el = el.parentElement;
+      if (table) {
+        if (table.parentElement) targets.push(table.parentElement);
+        if (table.closest("div")) targets.push(table.closest("div"));
       }
-      return null; // fall back to window
+      return targets;
     };
 
-    const container = findContainer();
+    const scrollTargets = getScrollTargets();
 
-    for (let i = 0; i < 60; i++) {
-      // Collect all visible rows
+    for (let i = 0; i < 80; i++) {
       const rows = Array.from(document.querySelectorAll("tr"));
       for (const row of rows) {
-        const cells = Array.from(row.querySelectorAll("td")).map(td => td.innerText?.trim()).filter(Boolean);
-        if (cells.length < 3) continue;
-        const nameIdx = cells.findIndex(c => /^[A-Z][A-Z0-9_]{2,15}$/.test(c));
-        const dmgIdx  = cells.findIndex(c => /^\d+\.?\d*[BbMmKk]$/.test(c));
-        const cntIdx  = cells.findIndex(c => /^\d$/.test(c));
-        if (nameIdx >= 0 && dmgIdx >= 0 && !map.has(cells[nameIdx])) {
-          map.set(cells[nameIdx], {
-            name: cells[nameIdx],
-            participationCount: cntIdx >= 0 ? cells[cntIdx] : "?",
-            totalDamage: cells[dmgIdx],
+        const cells = Array.from(row.querySelectorAll("td")).map(td => td.innerText?.trim());
+        if (cells.length < 4) continue;
+
+        const memberName = cells[1]; 
+        const partCount  = cells[2]; 
+        const totalDmg   = cells[3]; 
+
+        if (!memberName || memberName === "Member" || !totalDmg.match(/\d/)) continue;
+
+        if (!map.has(memberName)) {
+          map.set(memberName, {
+            name: memberName,
+            participationCount: partCount || "?",
+            totalDamage: totalDmg || "0",
           });
         }
       }
 
-      // Stale check — stop if no new members after 5 consecutive scrolls
-      if (map.size === last) {
-        if (++stale >= 5) break;
+      if (map.size === lastSize) {
+        if (++stale >= 7) break;
       } else {
         stale = 0;
-        last = map.size;
+        lastSize = map.size;
       }
 
-      // Scroll — try container first, fall back to window
-      if (container) {
-        container.scrollTop += 250;
-      } else {
-        window.scrollBy(0, 250);
-      }
-      await new Promise(r => setTimeout(r, 500));
+      scrollTargets.forEach(target => {
+        if (target === window) window.scrollBy(0, 300);
+        else if (target) target.scrollTop += 300;
+      });
+      await new Promise(r => setTimeout(r, 600));
     }
 
-    // Reset scroll position
-    if (container) container.scrollTop = 0; else window.scrollTo(0, 0);
-    await new Promise(r => setTimeout(r, 500));
+    scrollTargets.forEach(target => {
+      if (target === window) window.scrollTo(0, 0);
+      else if (target) target.scrollTop = 0;
+    });
+    await new Promise(r => setTimeout(r, 600));
 
     return Array.from(map.values());
   });
 
   console.log(`   ✅ Found ${members.length} unique members`);
 
-  // ---- Step 5: Click magnifier for each member ----
-  console.log(`📋 Step 5: Extracting per-attempt data...`);
+  // ---- Step 5: Advanced Visual Processing & Extraction Matrix ----
+  console.log(`📋 Step 5: Processing layout frames and conducting local image comparisons...`);
   const results = [];
 
   for (let i = 0; i < members.length; i++) {
     const m = members[i];
-    console.log(`   🔍 [${i+1}/${members.length}] ${m.name}`);
+    console.log(`   🔍 [${i+1}/${members.length}] Scraping: ${m.name}`);
 
-    // Scroll member row into view
     await tp.evaluate(name => {
-      const row = Array.from(document.querySelectorAll("tr")).find(r => r.innerText?.includes(name));
+      const rows = Array.from(document.querySelectorAll("tr"));
+      const row = rows.find(r => {
+        const tds = r.querySelectorAll("td");
+        return tds.length >= 2 && tds[1].innerText?.trim() === name;
+      });
       row?.scrollIntoView({ block: "center", behavior: "instant" });
     }, m.name);
-    await sleep(400);
+    await sleep(600);
 
-    // Click the magnifier — the last <td> in the row usually contains it
-    // Use dispatchEvent on whatever element is found (safe for SVG/img/button/div)
     const found = await tp.evaluate(name => {
       const rows = Array.from(document.querySelectorAll("tr"));
-      for (const row of rows) {
-        if (!row.innerText?.includes(name)) continue;
+      const row = rows.find(r => {
+        const tds = r.querySelectorAll("td");
+        return tds.length >= 2 && tds[1].innerText?.trim() === name;
+      });
+      if (!row) return false;
 
-        const tds = Array.from(row.querySelectorAll("td"));
-        if (!tds.length) continue;
+      const interactiveElement = 
+        row.querySelector("svg") || 
+        row.querySelector("img") || 
+        row.querySelector("button") || 
+        row.querySelector("[class*='search']") ||
+        row.querySelector("[class*='icon']") ||
+        row.querySelectorAll("td")[row.querySelectorAll("td").length - 1];
 
-        // Try last TD first (magnifier is usually at the end)
-        const searchTds = [...tds].reverse();
-        for (const td of searchTds) {
-          // Find any clickable child inside this TD
-          const clickable =
-            td.querySelector("button") ||
-            td.querySelector("[role='button']") ||
-            td.querySelector("svg") ||
-            td.querySelector("img") ||
-            td.querySelector("a") ||
-            td; // fallback: click the TD itself
-
-          if (clickable) {
-            clickable.dispatchEvent(new MouseEvent("click", { view: window, bubbles: true, cancelable: true }));
-            return true;
-          }
-        }
+      if (interactiveElement) {
+        interactiveElement.dispatchEvent(new MouseEvent("click", { view: window, bubbles: true, cancelable: true }));
+        return true;
       }
       return false;
     }, m.name);
 
     if (!found) {
-      console.log(`   ⚠ Could not find magnifier for ${m.name}`);
+      console.log(`   ⚠ Could not find trigger component for ${m.name}`);
       results.push({ ...m, attempts: [] });
       continue;
     }
 
-    await sleep(2500);
+    await sleep(3500); 
 
-    // Read attempt blocks from the detail panel
-    const rawAttempts = await tp.evaluate(() => {
-      const container =
-        document.querySelector("[class*='modal']") ||
-        document.querySelector("[class*='popup']") ||
-        document.querySelector("[class*='detail']") ||
-        document.querySelector("[class*='overlay']") ||
-        document.body;
+    // Find bounding box coordinates of the damage numbers first
+    const rawAttemptsData = await tp.evaluate(() => {
+      const container = document.body;
+      const allElements = Array.from(container.querySelectorAll("*"));
+      const matchedData = [];
 
-      const out = [];
-      // Each attempt is a card with boss icon, name, level, damage
-      const blocks = Array.from(container.querySelectorAll(
-        "[class*='battle'], [class*='attempt'], [class*='record'], [class*='boss'], [class*='round'], [class*='stage']"
-      ));
+      const candidates = allElements.filter(el => {
+        const txt = (el.innerText || "").replace(/\s/g, "");
+        return /^\d{1,3}(,\d{3}){1,}$/.test(txt);
+      });
 
-      for (const block of blocks) {
-        const leafs = Array.from(block.querySelectorAll("*"))
-          .filter(e => e.children.length === 0)
-          .map(e => e.innerText?.trim())
-          .filter(t => t);
+      const uniqueLeafs = candidates.filter(el => {
+        return !Array.from(el.querySelectorAll("*")).some(child => candidates.includes(child));
+      });
 
-        const icon    = block.querySelector("img");
-        const iconSrc = icon?.src || "";
-        const iconAlt = icon?.alt || "";
-        const iconCls = icon?.className || "";
+      for (const dmgEl of uniqueLeafs) {
+        const dmgValue = dmgEl.innerText.trim();
 
-        // Boss name: medium-length text, not starting with digit, not a label
-        const bossName  = leafs.find(t => t.length > 4 && !/^\d/.test(t) && !/(HARD|Level|Damage|Ultra|Nihilister|Rebuild)/.test(t));
-        const fullName  = leafs.find(t => /(Ultra|Nihilister|Rebuild|H\.S\.T\.A|Z\.E\.U\.S|P\.S\.I\.D)/.test(t));
-        const levelText = leafs.find(t => /Level\s*\d/.test(t));
-        // Damage: large integer with commas (e.g. 54,346,671,149)
-        const damage    = leafs.find(t => /^\d{1,3}(,\d{3}){3,}$/.test(t));
+        if (parseInt(dmgValue.replace(/,/g, ""), 10) <= 1000000) continue;
 
-        if (damage) {
-          out.push({
-            bossName: fullName || bossName || "?",
-            level: levelText || "?",
-            damage,
-            iconSrc, iconAlt, iconCls,
-          });
+        // Each attempt card has class containing "bg-[#f4f4f4]" — this is the
+        // confirmed, reliable boundary for one attempt block (header + avatars + damage)
+        let currentParent = dmgEl.parentElement;
+        let attemptCard = null;
+
+        for (let depth = 0; depth < 12; depth++) {
+          if (!currentParent || currentParent === container) break;
+          const cls = currentParent.className || "";
+          if (typeof cls === "string" && cls.includes("bg-[#f4f4f4]")) {
+            attemptCard = currentParent;
+            break;
+          }
+          currentParent = currentParent.parentElement;
         }
+
+        if (!attemptCard) attemptCard = dmgEl.parentElement?.parentElement || dmgEl.parentElement;
+
+        const allCardImgs = Array.from(attemptCard.querySelectorAll("img"));
+        const targetImg = allCardImgs.find(img => (img.src || "").toLowerCase().includes("icon-code-"));
+
+        matchedData.push({
+          damage: dmgValue,
+          srcUrl: targetImg ? targetImg.src : "",
+        });
       }
-      return out;
+
+      return matchedData;
     });
 
-    const processed = rawAttempts.map(a => {
-      const bossElem = detectElement(a.iconSrc, a.iconAlt, a.iconCls);
-      const weakness = bossElem ? WEAKNESS_MAP[bossElem] : null;
-      const color    = weakness ? ELEMENT_COLORS[weakness] : null;
-      return { bossName: a.bossName, level: a.level, damage: a.damage, bossElement: bossElem, weakness, color };
+    // Detect element directly from the icon filename (e.g. "icon-code-electronic.png")
+    // No screenshot/pixel-matching needed — the filename tells us everything.
+    const processedAttempts = rawAttemptsData.map(raw => {
+      let detectedElement = "unknown";
+      const srcLower = (raw.srcUrl || "").toLowerCase();
+
+      if (srcLower.includes("icon-code-electronic") || srcLower.includes("icon-code-electric")) detectedElement = "electric";
+      else if (srcLower.includes("icon-code-fire"))    detectedElement = "fire";
+      else if (srcLower.includes("icon-code-water"))   detectedElement = "water";
+      else if (srcLower.includes("icon-code-wind"))    detectedElement = "wind";
+      else if (srcLower.includes("icon-code-iron"))    detectedElement = "iron";
+
+      const weakness = detectedElement !== "unknown" ? WEAKNESS_MAP[detectedElement] : "-";
+      return { damage: raw.damage, bossElement: detectedElement, weakness };
     });
 
-    console.log(`      ↳ ${processed.length} attempt(s) found`);
-    processed.forEach((a, idx) => {
-      console.log(`         #${idx+1} ${a.bossName} | Boss: ${a.bossElement||"?"} → Weakness: ${a.weakness||"?"} | ${a.damage}`);
+    console.log(`      ↳ Scraped successfully: ${processedAttempts.length} row(s)`);
+    processedAttempts.forEach((a, idx) => {
+      console.log(`         [Attempt ${idx+1}] Match: ${a.bossElement.toUpperCase()} ➔ Weakness Target: ${a.weakness.toUpperCase()} | Damage: ${a.damage}`);
     });
 
-    results.push({ ...m, attempts: processed });
+    results.push({ ...m, attempts: processedAttempts });
 
-    // Close the detail panel
     await tp.keyboard.press("Escape");
     await sleep(500);
     await tp.evaluate(() => {
-      const close = document.querySelector(
-        "[class*='close'], [class*='back'], [aria-label*='close'], [aria-label*='back'], button[class*='close']"
-      );
-      if (close) close.dispatchEvent(new MouseEvent("click", { view: window, bubbles: true, cancelable: true }));
+      const closeButtons = Array.from(document.querySelectorAll("[class*='close'], [class*='back'], button"));
+      const actualClose = closeButtons.find(b => {
+        const txt = b.innerText?.toLowerCase() || "";
+        return txt === "" || txt.includes("close") || txt.includes("x");
+      });
+      if (actualClose) actualClose.dispatchEvent(new MouseEvent("click", { view: window, bubbles: true, cancelable: true }));
     });
-    await sleep(800);
+    await sleep(1000);
   }
 
   return results;
@@ -438,85 +393,22 @@ function buildCSV(results) {
     { key: "participation", header: "Participation" },
     { key: "total_damage",  header: "Total Damage" },
   ];
+  
   for (let i = 1; i <= maxA; i++) {
-    cols.push({ key: `a${i}_boss`,     header: `Attempt ${i} Boss` });
-    cols.push({ key: `a${i}_level`,    header: `Attempt ${i} Level` });
-    cols.push({ key: `a${i}_bossElem`, header: `Attempt ${i} Boss Element` });
     cols.push({ key: `a${i}_weakness`, header: `Attempt ${i} Weakness` });
     cols.push({ key: `a${i}_damage`,   header: `Attempt ${i} Damage` });
   }
+  
   const rows = results.map(r => {
     const row = { member: r.name, participation: r.participationCount, total_damage: r.totalDamage };
     for (let i = 0; i < maxA; i++) {
       const a = r.attempts?.[i];
-      row[`a${i+1}_boss`]     = a?.bossName    || "-";
-      row[`a${i+1}_level`]    = a?.level        || "-";
-      row[`a${i+1}_bossElem`] = a?.bossElement  || "-";
-      row[`a${i+1}_weakness`] = a?.weakness     || "-";
-      row[`a${i+1}_damage`]   = a?.damage       || "-";
+      row[`a${i+1}_weakness`] = a?.weakness ? a.weakness.charAt(0).toUpperCase() + a.weakness.slice(1) : "-";
+      row[`a${i+1}_damage`]   = a?.damage || "-";
     }
     return row;
   });
   return stringify(rows, { header: true, columns: cols });
-}
-
-function buildHTML(results) {
-  const maxA = Math.max(...results.map(r => r.attempts?.length || 0), 3);
-  const badge = elem => {
-    if (!elem) return "—";
-    const c = ELEMENT_COLORS[elem] || "#ccc";
-    return `<span style="padding:2px 7px;border-radius:4px;font-size:10px;font-weight:700;background:${c};color:#fff;letter-spacing:.5px">${elem.toUpperCase()}</span>`;
-  };
-  let hdr = `<tr><th rowspan="2">Member</th><th rowspan="2">Count</th><th rowspan="2">Total DMG</th>`;
-  for (let i = 1; i <= maxA; i++) hdr += `<th colspan="3">Attempt ${i}</th>`;
-  hdr += `</tr><tr>`;
-  for (let i = 1; i <= maxA; i++) hdr += `<th>Boss</th><th>Weakness</th><th>Damage</th>`;
-  hdr += `</tr>`;
-
-  let body = "";
-  for (const r of results) {
-    body += `<tr><td class="name">${r.name}</td><td class="c">${r.participationCount}</td><td class="dmg">${r.totalDamage}</td>`;
-    for (let i = 0; i < maxA; i++) {
-      const a = r.attempts?.[i];
-      if (!a) { body += `<td class="dash">—</td><td class="dash">—</td><td class="dash">—</td>`; continue; }
-      const bg = a.color ? a.color + "22" : "transparent";
-      const fg = a.color || "#333";
-      body += `<td style="font-size:11px;line-height:1.4">${a.bossName}<br><span style="color:#999;font-size:10px">${a.level}</span></td>`;
-      body += `<td class="c">${badge(a.weakness)}</td>`;
-      body += `<td class="dmg" style="background:${bg};color:${fg}">${a.damage}</td>`;
-    }
-    body += `</tr>`;
-  }
-
-  return `<!DOCTYPE html>
-<html lang="en"><head><meta charset="UTF-8"><title>Union Raid Day 2</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:#f5f5f5;padding:2rem}
-h1{font-size:18px;font-weight:500;margin-bottom:1rem;color:#1a1a1a}
-.legend{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1rem;font-size:12px;color:#666;align-items:center}
-.dot{width:10px;height:10px;border-radius:2px;display:inline-block;margin-right:3px}
-.wrap{overflow-x:auto;background:#fff;border-radius:10px;border:0.5px solid #eee}
-table{border-collapse:collapse;font-size:12px;white-space:nowrap;width:100%}
-th{background:#f0f0f0;color:#555;font-size:11px;padding:7px 10px;border:0.5px solid #eee;text-align:center}
-td{padding:6px 10px;border:0.5px solid #eee;color:#1a1a1a}
-td.name{font-weight:600;position:sticky;left:0;background:#fff;z-index:1}
-td.c{text-align:center}
-td.dmg{text-align:right;font-weight:500;font-variant-numeric:tabular-nums}
-td.dash{text-align:center;color:#ccc}
-tr:hover td{filter:brightness(0.97)}
-</style></head><body>
-<h1>🛡 Union Raid — Day 2 (Hard)</h1>
-<div class="legend">
-  <span style="font-weight:500;color:#333">Weakness:</span>
-  <span><span class="dot" style="background:#D3361E"></span>Fire</span>
-  <span><span class="dot" style="background:#86C67C"></span>Wind</span>
-  <span><span class="dot" style="background:#F0B27A"></span>Iron</span>
-  <span><span class="dot" style="background:#8C79C5"></span>Electric</span>
-  <span><span class="dot" style="background:#74B4E7"></span>Water</span>
-</div>
-<div class="wrap"><table><thead>${hdr}</thead><tbody>${body}</tbody></table></div>
-</body></html>`;
 }
 
 async function runScrapeMode() {
@@ -546,14 +438,11 @@ async function runScrapeMode() {
 
   if (!results.length) { console.error("❌ No data scraped."); process.exit(1); }
 
+  fs.writeFileSync("element_debug_log.json", JSON.stringify(results, null, 2), "utf-8");
+  console.log(`\n📂 [Snapshot] Detailed asset trace map saved to: element_debug_log.json`);
+
   fs.writeFileSync(OUTPUT_FILE, buildCSV(results), "utf-8");
-  console.log(`\n📄 CSV saved: ${OUTPUT_FILE}`);
-
-  const htmlFile = OUTPUT_FILE.replace(".csv", ".html");
-  fs.writeFileSync(htmlFile, buildHTML(results), "utf-8");
-  console.log(`🌐 HTML saved: ${htmlFile}`);
-
-  console.log(`\n📊 Done: ${results.length} members | ${results.filter(r => r.attempts?.length > 0).length} with attempt data`);
+  console.log(`📄 Spreadsheet Report Saved Successfully: ${OUTPUT_FILE}`);
 }
 
 if (isLoginMode) runLoginMode().catch(console.error);

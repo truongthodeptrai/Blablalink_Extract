@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛡 Union Raid — Day 2 Dashboard</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: system-ui, -apple-system, sans-serif; background: #f5f5f5; padding: 2rem; color: #1a1a1a; }
+        
+        h1 { font-size: 20px; font-weight: 600; margin-bottom: 0.5rem; color: #1a1a1a; }
+        
+        .upload-zone { background: #fff; padding: 15px; border-radius: 8px; border: 1px dashed #ccc; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 10px; font-size: 13px; }
+        .upload-zone input[type="file"] { font-size: 13px; }
+        
+        .legend { display: flex; gap: 15px; flex-wrap: wrap; margin-bottom: 1.5rem; font-size: 12px; color: #666; align-items: center; background: #fff; padding: 10px 15px; border-radius: 8px; border: 0.5px solid #eee; }
+        .legend-title { font-weight: 600; color: #333; }
+        .dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; margin-right: 4px; vertical-align: middle; }
+        
+        .wrap { overflow-x: auto; background: #fff; border-radius: 10px; border: 0.5px solid #eee; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        table { border-collapse: collapse; font-size: 12px; white-space: nowrap; width: 100%; min-width: 800px; }
+        
+        th { background: #f8f9fa; color: #555; font-size: 11px; font-weight: 600; padding: 10px 12px; border: 0.5px solid #eee; text-align: center; text-transform: uppercase; letter-spacing: 0.3px; }
+        td { padding: 10px 12px; border: 0.5px solid #eee; color: #1a1a1a; vertical-align: middle; }
+        
+        td.name { font-weight: 600; position: sticky; left: 0; background: #fff; z-index: 1; border-right: 1.5px solid #ddd; }
+        tr:hover td.name { background: #f9f9f9; }
+        
+        td.c { text-align: center; }
+        td.dmg { text-align: right; font-weight: 500; font-variant-numeric: tabular-nums; }
+        td.dash { text-align: center; color: #ccc; font-weight: 400; }
+        
+        tr:hover td { filter: brightness(0.97); }
+    </style>
+</head>
+<body>
+
+    <h1>🛡 Union Raid — Day 2 (Hard) Condensed Report Dashboard</h1>
+    
+    <div class="upload-zone">
+        <span style="font-weight: 600;">Upload Data Source:</span>
+        <input type="file" id="csvFileInput" accept=".csv">
+    </div>
+
+    <div class="legend">
+        <span class="legend-title">Elemental Color Coding Reference Map Matrix:</span>
+        <span><span class="dot" style="background:#D3361E"></span>Fire</span>
+        <span><span class="dot" style="background:#86C67C"></span>Wind</span>
+        <span><span class="dot" style="background:#F0B27A"></span>Iron</span>
+        <span><span class="dot" style="background:#8C79C5"></span>Electric</span>
+        <span><span class="dot" style="background:#74B4E7"></span>Water</span>
+    </div>
+
+    <div class="wrap">
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th style="min-width: 140px; border-right: 1.5px solid #ddd;">Member Name</th>
+                    <th>Participation Count</th>
+                    <th>Total DMG</th>
+                    <th>Attempt 1 Damage</th>
+                    <th>Attempt 2 Damage</th>
+                    <th>Attempt 3 Damage</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: #999; font-style: italic;">No file loaded yet. Please upload your union_raid_day2.csv file above.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        const ELEMENT_COLORS = {
+            fire:     "#D3361E",
+            wind:     "#86C67C",
+            iron:     "#F0B27A",
+            electric: "#8C79C5",
+            water:    "#74B4E7"
+        };
+
+        document.getElementById('csvFileInput').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(evt) {
+                const text = evt.target.result;
+                processData(text);
+            };
+            reader.readAsText(file);
+        });
+
+        function parseCSV(text) {
+            const lines = text.split(/\r\n|\n/).filter(line => line.trim() !== '');
+            if (lines.length === 0) return [];
+            
+            return lines.map(line => {
+                const result = [];
+                let current = '';
+                let inQuotes = false;
+                
+                for (let i = 0; i < line.length; i++) {
+                    const char = line[i];
+                    if (char === '"') {
+                        inQuotes = !inQuotes;
+                    } else if (char === ',' && !inQuotes) {
+                        result.push(current.trim());
+                        current = '';
+                    } else {
+                        current += char;
+                    }
+                }
+                result.push(current.trim());
+                return result;
+            });
+        }
+
+        function processData(csvText) {
+            const dataMatrix = parseCSV(csvText);
+            if (dataMatrix.length < 2) return;
+
+            const rows = dataMatrix.slice(1);
+            const tableBody = document.getElementById('tableBody');
+            tableBody.innerHTML = ''; 
+
+            rows.forEach(cells => {
+                if (cells.length < 3) return;
+
+                const memberName  = cells[0];
+                const partCount   = cells[1];
+                const totalDamage = cells[2];
+
+                let rowHtml = `<tr><td class="name">${memberName}</td><td class="c">${partCount}</td><td class="dmg" style="font-weight:600; border-right: 1.5px solid #ddd;">${totalDamage}</td>`;
+
+                for (let i = 1; i <= 3; i++) {
+                    const idxWeak = 3 + (i - 1) * 2;
+                    const idxDmg  = 4 + (i - 1) * 2;
+
+                    const rawWeakness = cells[idxWeak] || "-";
+                    const rawDamage   = cells[idxDmg]  || "-";
+
+                    if (rawWeakness === "-" && rawDamage === "-") {
+                        rowHtml += `<td class="dash">—</td>`;
+                    } else {
+                        const cleanElementKey = rawWeakness.toLowerCase();
+                        const colorCode = ELEMENT_COLORS[cleanElementKey] || "#ccc";
+                        // Custom alpha hex code conversion generating a transparent background (15% padding)
+                        const transparentBg = colorCode + "26"; 
+
+                        // Kết xuất duy nhất ô Damage và nhuộm màu nền ẩn theo cột nguyên tố điểm yếu tương ứng
+                        rowHtml += `<td class="dmg" style="background:${transparentBg}; color:${colorCode}; font-weight:600; border-right: 0.5px solid #eee;">${rawDamage}</td>`;
+                    }
+                }
+
+                rowHtml += `</tr>`;
+                tableBody.insertAdjacentHTML('beforeend', rowHtml);
+            });
+        }
+    </script>
+</body>
+</html>
