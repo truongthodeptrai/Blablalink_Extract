@@ -14,11 +14,11 @@ const isLoginMode = process.argv.includes("--login");
 
 // Step 2 Rule Matrix: Circular Weakness Rule System Lookup
 const WEAKNESS_MAP = {
-  fire:     "wind",     // Fire boss is weak against Wind squads
-  wind:     "iron",     // Wind boss is weak against Iron squads
-  iron:     "electric", // Iron boss is weak against Electric squads
-  electric: "water",    // Electric boss is weak against Water squads
-  water:    "fire",     // Water boss is weak against Fire squads
+  fire:     "water",     // Fire boss is weak against Water squads
+  wind:     "fire",     // Wind boss is weak against Fire squads
+  iron:     "wind", // Iron boss is weak against Wind squads
+  electric: "iron",    // Electric boss is weak against Iron squads
+  water:    "electric",     // Water boss is weak against Electric squads
 };
 
 const ELEMENT_COLORS = {
@@ -142,7 +142,7 @@ async function scrapeUnionRaid(page, config) {
   console.log(`📋 Step 1: Clicking Union Raid tab...`);
   await clickText(page, "Union Raid");
   await sleep(2000);
-
+ 
   console.log(`📋 Step 2: Clicking Details...`);
   await clickText(page, "Details");
   await sleep(3000);
